@@ -1,0 +1,275 @@
+options:
+	#ParticleCooldownTime
+	{cparticlect::%arg 2%} = {cparticlect::%player%}
+	{cparticlect::%arg 2%} = {cparticlect::%loop-player%}
+
+	#Particle play
+	{cfireworkspark::%arg 3%} = {cfireworkspark::%loop-player%}
+	{cwolfhearts::%arg 3%} = {cwolfhearts::%loop-player%}
+
+	#Headtype
+	{chead::type::%arg 2%} = {chead::type::%player%}
+
+	#VoteCooldown/VoteTime
+	{vote::time::%player%} = {vote::time::%loop-player%}
+
+	{cfireworkspark::%arg 2%} = {cfireworkspark::%loop-player%}
+	{cfireworkspark::%arg 2%} = {cfireworkspark::%player%}
+
+#====================================================================================================
+#Join
+
+on join:
+
+	#LobbySettings, set food & health
+	execute console command "mvtp %player% lobby"
+	set hunger to 10
+	set player's health to 10
+
+	#Clear player and give chest in lobby
+	player is in world "lobby":
+		clear the player's inventory
+		set slot 4 of player to a chest named "&6Cosmetics2" with lore "&7Open een cosmetic GUI"
+	#Set ParticleCooldownTime
+	#if {cparticlect::%player%} is not set:
+	set {cparticlect::%player%} to 0
+	set {cadminchangeb::%player%} to false
+	set {cadminchangei::%player%} to false
+	if {cadminchange::%player%} is not set:
+		set {cadminchange::%player%} to false
+	#Set VoteTime to 0
+	if {vote::time::%player%} is not set:
+		set {vote::time::%player%} to 0
+	#Set head slot to last used head
+	set helmet slot of player to {chead::type::%player%}
+
+#====================================================================================================
+#On break
+
+on break:
+	#In lobby, send message and cancel break of block
+	if player is in "lobby":
+		if {cadminchangeb::%player%} is false:
+			send "&6<Lobby> &4Je mag geen blokken breken in de lobby."
+			cancel event
+
+on place:
+	#In lobby, send message and cancel break of block
+	if player is in "lobby":
+		if {cadminchangeb::%player%} is false:
+			send "&6<Lobby> &4Je mag geen blokken plaatsen in de lobby."
+			cancel event
+
+#====================================================================================================
+#On leftclick
+
+on leftclick:
+	#Detect cosmetic menu, open cosmetic menu
+	if player is holding a chest named "&6Cosmetics2" with lore "&7Open een cosmetic GUI":
+		execute console command "/cosmeticmainn open %player%"
+		cancel event
+
+#====================================================================================================
+#On  rightclick
+
+on rightclick:
+	#Detect cosmetic menu, open cosmetic menu
+	player is holding a chest named "&6Cosmetics2" with lore "&7Open een cosmetic GUI":
+		execute console command "/cosmeticmainn open %player%"
+		cancel event
+
+#====================================================================================================
+#Cosmetic menu
+
+command /cosmeticmainn open <offline player>:
+	executable by: console
+	trigger:
+		#Executor: console
+		#Open gui, opens particle or head gui
+		open chest with 1 rows named "&6Cosmetics2" to arg 1
+		format slot 0 of arg 1 with orange dye named "&5Particles" to close then run [execute console command "cosmeticpp open %arg 1%"]
+		format slot 2 of arg 1 with Skull of ("Tom25W" parsed as an offline player) named "&eHeads" to close then run [execute console command "cosmetichh open %arg 1%"]
+
+#====================================================================================================
+#Particle menu
+
+command /cosmeticpp open <offline player>:
+	executable by: console
+	trigger:
+		#Executor: console
+		#Open gui, execute particle command
+		wait 3 tick
+		open chest with 1 rows named "&5Particles" to arg 1
+		format slot 0 of arg 1 with leather boots dyed white named "&f&lFirework Sparks" with lore "&710 secondes vuurwerk particles" to close then run [execute console command "cparticlee fireworks_spark FireworksSpark %arg 1%"]
+		format slot 1 of arg 1 with bone named "&4&lWolf Hearts" with lore "&710 secondes wolven hartjes particles" to close then run [execute console command "cparticlee wolfheart WolfHeart %arg 1%"]
+
+#==================================================
+#Particle command
+
+command /cparticlee <text> <text> <offline player>:
+	executable by: console
+	trigger:
+		#Executor: console
+		#Plays particles at player
+		if {cparticlect::%arg 3%} is 0:
+			if arg 1 is "wolfheart":
+				send "&5<Cosmetics> &4Deze particle is nog niet klaar." to arg 3
+				stop
+			else:
+				set {particleeffect::%arg 3%} to arg 1
+
+				send "&5<Cosmetics> &d%arg 2% particle is aangezet" to arg 3
+
+				set {cfireworkspark::%arg 3%} to true
+				wait 10 seconds
+
+				send "&5<Cosmetics> &d%arg 2% particle is uitgezet" to arg 3
+
+				set {cfireworkspark::%arg 3%} to false
+			
+		#If cooldown not over, send cooldown message
+		else:
+			send "&5<Cosmetics> &4Je hebt nog een cooldown omdat je de particle: &c%arg 2% &4aan hebt gezet, van: &c%arg 2% &4secondes" to arg 3
+			stop
+
+#==================================================
+#Partcle play
+
+every 5 ticks:
+	#Loop all players, if particle enabled, play particles at player
+	loop all players:
+		if {cfireworkspark::%loop-player%} is true:
+			show 25 "%{particleeffect::%loop-player%}%" particles at location of loop-player for loop-player offset by 0.5, 1, 0.5
+			#show 25 "fireworks_spark" particles at location of loop-player for loop-player offset by 0.5, 1, 0.5
+			stop
+
+#====================================================================================================
+#Head menu
+
+command /cosmetichh open <offline player>:
+	executable by: console
+	trigger:
+		#Executor: console
+		#Open chest with 6 rows
+		wait 3 tick
+		open chest with 6 rows named "&5Heads Items" to arg 1
+
+		#Second row
+		format slot 9 of arg 1 with Skull of ("MHF_PigZombie" parsed as an offline player) named "&eZombiePigman" to close then run [execute console command "cheadd MHF_PigZombie %arg 1%"]
+		format slot 10 of arg 1 with Skull of ("Tom25W" parsed as an offline player) named "&eGoldenChest" to close then run [execute console command "/cheadd GoldenChest %arg 1%"]
+		#format slot 11 of arg 1 with Skull of ("http://textures.minecraft.net/texture/dfa695b59618b3616b6aaa910c5a10146195edd6367d25e9399a74ceef966" parsed as an offline player) named "&eGoldenChest" to close then run [execute console command "/cheadd GoldenChest %arg 1%"]
+
+		#Last row
+		format slot 49 of arg 1 with barrier named "&4Sluit het menu" to close
+		format slot 50 of arg 1 with arrow named "&cVolgende pagina" to close then run [execute console command "cosmetichh2 open %arg 1%"]
+		format slot 53 of arg 1 with barrier named "&cVerwijder je head" to close then run [execute console command "cheadd remove %arg 1%"]
+
+#==================================================
+
+command /cosmetichh2 open <offline player>:
+	executable by: console
+	trigger:
+		#Executor: console
+		#Send: no second page
+		wait 3 tick
+		send "&5<Cosmetics> &4Er is nog geen 2de pagina" to arg 1
+
+#==================================================
+
+command /cheadd <text> <offline player>:
+	executable by: console
+	trigger:
+		if arg 1 is "remove":
+			set helmet slot of arg 2 to air
+			send "&5<Cosmetics> &dJe head is verwijderd" to arg 2
+			stop
+		if arg 1 is "GoldenChest":
+			set helmet slot of arg 2 to Skull of ("Tom25W" parsed as an offline player)
+			set {chead::type::%arg 2%} to Skull of ("Tom25W" parsed as an offline player)
+			send "&5<Cosmetics> &dVeel plezier met je head" to arg 2
+
+		if arg 1 is "MHF_PigZombie":
+			set helmet slot of arg 2 to Skull of ("MHF_PigZombie" parsed as an offline player)
+			set {chead::type::%arg 2%} to Skull of ("MHF_PigZombie" parsed as an offline player)
+			send "&5<Cosmetics> &dVeel plezier met je head" to arg 2
+
+#====================================================================================================
+
+
+command /cadminn [<text>] [<text>]:
+	trigger:
+		if player has permission "adminchange":
+			if arg 1 is "invc" OR "invchange" OR "ic":
+				if arg 2 is "true" OR "on" OR "aan":
+					send "&3<AdminCommands> &bJe kan je inventory nu veranderen"
+					set {cadminchangei::%player%} to true
+					stop
+				if arg 2 is "false" OR "off" OR "uit":
+					send "&3<AdminCommands> &bJe kan je inventory nu niet meer veranderen"
+					set {cadminchangei::%player%} to false
+					stop
+				else:
+					send "&3<AdminCommands> &4Doe /cadmin &cinvc/invchange/ic true/on/aan &4om inventorychange aan te zetten"
+					send "&3<AdminCommands> &4Doe /cadmin &cinvc/invchange/ic false/off/uit &4om inventorychange uit te zetten"
+					stop
+			if arg 1 is "breakblocks" OR "breakb" OR "bb":
+				if arg 2 is "true" OR "on" OR "aan":
+					send "&3<AdminCommands> &bJe kan nu blokken breken in de lobby"
+					set {cadminchangeb::%player%} to true
+					stop
+				if arg 2 is "false" OR "off" OR "uit":
+					send "&3<AdminCommands> &bJe kan nu geen blokken meer breken in de lobby"
+					set {cadminchangeb::%player%} to false
+					stop
+				else:
+					send "&3<AdminCommands> &4Doe /cadmin &cbreakblocks/breakb/bb true/on/aan &4om blokken in de lobby te kunnen breken"
+					send "&3<AdminCommands> &4Doe /cadmin &cbreakblocks/breakb/bb false/off/uit &4om geen blokken in de lobby te kunnen breken"
+					stop
+			if arg 1 is not set:
+				send "&3<AdminCommands> &4Doe /cadmin &cinvc/invchange/ic true/on/aan &4om inventorychange aan te zetten"
+				send "&3<AdminCommands> &4Doe /cadmin &cinvc/invchange/ic false/off/uit &4om inventorychange uit te zetten"
+				stop
+		else:
+			send "&3<AdminCommands> &4Je hebt onvoldoende permissies hiervoor"
+			stop
+
+on inventory click:
+	if player is in world "lobby":
+		if {cadminchangei::%player%} is false:
+			cancel event
+on drop:
+	if player is in world "lobby":
+		if {cadminchangei::%player%} is false:
+			cancel event
+
+#=================================================
+#Speciaal item
+#Keys/iets anders
+
+command /votee:
+	trigger:
+		if {vote::time::%player%} is 0:
+			send "&9<Vote> &3Hier is je vote key"
+			give player 1 tripwire hook named "&9VoteKey" with lore "&kl"
+			set {vote::time::%player%} to 10
+		else:
+			send "&9<Vote> &3Je kan pas voten over: &b%{vote::time::%player%}% &3seconden."
+
+
+every 1 seconds:
+	loop all players:
+		if {vote::time::%loop-player%} is not 0:
+			remove 1 from {vote::time::%loop-player%}
+
+on rightclick:
+	player is in world "lobby":
+		clicked block is a chest:
+			if player is holding a tripwire hook named "&9VoteKey" with lore "&kl":
+				remove 1 tripwire hook named "&9VoteKey" with lore "&kl" from player
+				cancel event
+				execute console command "cvoteopen %player%"
+				stop
+			else:
+				send "&9<Vote> &4Je hebt geen &cVoteKey"
+				cancel event
+				stop

@@ -1,0 +1,226 @@
+options:
+	{colosseumgeld::total::%loop-player%} = {colosseumgeld::total::%player%}
+	{colosseumgeld::total::%player%} = {colosseumgeld::total::%player%}
+	{colosseumgeld::total::%player%} = {colosseumgeld::total::%arg 3%}
+	{colosseumarena::%arg 1%} = {colosseumarena::%arg 2%}
+	{exp::level::%player%} = {exp::level::%attacker%}
+	{exp::level::%player%} = {exp::level::%loop-player%}
+	{level::%player%} = {level::%loop-player%}
+	{wave::%loop-player%} = {wave::%player%}
+	{nextwave::%loop-player%} = {nextwave::%player%}
+	{_loc::%player%} = {_loc::%loop-player%}
+
+function itemsInInventory(p: player, item: material) :: number:
+	loop all items in {_p}'s inventory:
+		"%loop-item%" contains "%{_item}%"
+		set {_num::*} to ("%loop-item%") split at " "
+		"%{_num::1}%" parsed as a number is a number:
+			add {_num::1} parsed as a number to {_result}
+		else:
+			add 1 to {_result}
+	{_result} is set:
+		return {_result}
+		stop
+	return 0
+
+on join:
+	if {level::%player%} is not set:
+		set {level::%player%} to 1
+	if {exp::level::%player%} is not set:
+		set {exp::level::%player%} to 0
+	if {nextwave::%player%} is not set:
+		set {nextwave::%player%} to false
+	if {wave::%player%} is not set:
+		set {wave::%player%} to 1
+
+every 1 tick:
+	loop all players in world "Colosseum-w1":
+		loop all items in the inventory of loop-player:
+			if loop-item is gold ingot named "&6Gold" with lore "&eLever deze bij de shop in, en krijg er items voor":
+				set {colosseumgeld::%loop-player%} to itemsInInventory(loop-player, gold ingot named "&6Gold" with lore "&eLever deze bij de shop in, en krijg er items voor")
+				remove loop-item from loop-player
+				stop
+
+every 1 tick:
+	loop all players in world "Colosseum-w1":
+		set {colosseumgeld::total::%loop-player%} to {colosseumgeld::total::%loop-player%}+{colosseumgeld::%loop-player%}
+		set {colosseumgeld::%loop-player%} to 0
+		stop
+
+every 1 tick:
+	loop all players in world "Colosseum-w1":
+		wipe loop-player's sidebar
+		set name of sidebar of loop-player to "&6&lColosseum"
+		set score "&e&lWereld: &e%world of loop-player%" in sidebar of loop-player to 10
+		set score "&e&lLevel: &e%{level::%loop-player%}%" in sidebar of loop-player to 9
+		set score "&e&lGeld: &e%{colosseumgeld::total::%loop-player%}%" in sidebar of loop-player to 8
+		set score "&e&lWave: &e%{wave::%loop-player%}%" in sidebar of loop-player to 7
+
+
+command /colosseumgeld [<text>] [<number>] [<offline player>]:
+	aliases: cg
+	trigger:
+		if arg 1 is "see":
+			send "&e<&6Colosseum&e> &e%{colosseumgeld::total::%player%}%"	
+			stop
+		if arg 1 is "set" OR "add":
+			if player has permission "cg.*" OR "cg.set":
+				if arg 2 is set:
+					if arg 3 is set:
+						if arg 1 is "set":
+							set {colosseumgeld::total::%arg 3%} to arg 2
+							send "&e<&6Colosseum&e> &6Je hebt het geld van &e%arg 3% &6naar &e%{colosseumgeld::total::%arg 3%}% &6gezet."
+							stop
+						if arg 1 is "add":
+							add arg 2 to {colosseumgeld::total::%arg 3%}
+							send "&e<&6Colosseum&e> &6Je hebt het geld van &e%arg 3% &6naar &e%{colosseumgeld::total::%arg 3%}% &6gezet."
+							stop
+						else:
+							send "&e<&6Colosseum&e> &4Doe &c/cg [speler] [set/add] [nummer]&4."
+							stop
+					else:
+						send "&e<&6Colosseum&e> &4Doe &c/cg [speler] [set/add] [nummer]&4."
+						stop
+				else:	
+					send "&e<&6Colosseum&e> &4Doe &c/cg [speler] [set/add] [nummer]&4."
+					stop
+
+			else:
+				send "&e<&6Colosseum&6> &4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+				stop
+		else:
+			send "&e<&6Colosseum&e> &4Doe &c/cg see&4."
+			stop
+
+
+
+command /level:
+	trigger:
+		send "&e<&6Colosseum&e> &6Je bent level &e%{level::%player%}%&6."
+		stop
+
+
+on death:
+	if the victim is in the world "Colosseum-w1":
+		clear drops
+		remove all xp from drops
+		if victim is a zombie:
+			drop ((random integer between 0 and 2)) of gold ingot named "&6Gold" with lore "&eLever deze bij de shop in, en krijg er items voor" at victim
+			add 1 to {exp::level::%attacker%}
+			stop
+
+		if victim is a baby zombie:
+			drop ((random integer between 0 and 1)) of gold ingot named "&6Gold" with lore "&eLever deze bij de shop in, en krijg er items voor" at victim
+			add 1 to {exp::level::%attacker%}
+			stop
+
+command /setexp [<number>]:
+	trigger:
+		add arg 1 to {exp::level::%player%} 
+		stop
+
+command /exp:
+	trigger:
+		send "%{exp::level::%player%}%"
+		stop
+		
+command /leset:
+	trigger:
+		set {level::%player%} to 1
+		set {exp::level::%player%} to 0
+		stop
+
+every 1 tick:
+	loop all players in world "Colosseum-w1":
+		if {level::%loop-player%} is 1:
+			if {exp::level::%loop-player%} is more than 10-1:
+				set {level::%loop-player%} to 2
+				set {exp::level::%loop-player%} to 0
+				send "&e<&6Colosseum&e> &6Je bent &elevel 2 &6geworden!" to loop-player
+				launch star firework colored yellow and orange at loop-player timed 0.2
+				stop
+
+		if {level::%loop-player%} is 2:
+			if {exp::level::%loop-player%} is more than 30-1:
+				set {level::%loop-player%} to 3
+				set {exp::level::%loop-player%} to 0
+				send "&e<&6Colosseum&e> &6Je bent &elevel 3 &6geworden!" to loop-player
+				launch star firework colored yellow and orange at loop-player timed 0.2
+				stop
+
+		if {level::%loop-player%} is 3:
+			if {exp::level::%loop-player%} is more than 60-1:
+				set {level::%loop-player%} to 4
+				set {exp::level::%loop-player%} to 0
+				send "&e<&6Colosseum&e> &6Je bent &elevel 4 &6geworden!" to loop-player
+				launch star firework colored yellow and orange at loop-player timed 0.2
+				stop
+
+		if {level::%loop-player%} is 4:
+			if {exp::level::%loop-player%} is more than 100-1:
+				set {level::%loop-player%} to 5
+				set {exp::level::%loop-player%} to 0
+				send "&e<&6Colosseum&e> &6Je bent &elevel 5 &6geworden!" to loop-player
+				launch star firework colored pink and purple at loop-player timed 0.2
+				stop
+
+
+
+command /wave:
+	trigger:
+		if {nextwave::%player%} is false:
+			set {nextwave::%player%} to true
+			send "&e<&6Colosseum&e> &6Je hebt een nieuwe wave gestart."
+			add 1 to {wave::%player%}
+			stop
+
+		else:
+			send "&e<&6Colosseum&e> &4Je bent nog in een wave bezig."
+			stop
+
+command /rwave:
+	trigger:
+		set {nextwave::%player%} to false
+		set {wave::%player%} to 1
+
+every 1 tick:
+	loop all players in world "Colosseum-w1":
+		if {wave::%loop-player%} is 1:
+			if {nextwave::%loop-player%} is true:
+				
+
+				spawn 10 zombie at location of loop-player
+				set {nextwave::%loop-player%} to false
+		if {wave::%loop-player%} is 2:
+			if {nextwave::%loop-player%} is true:
+				
+				set {nextwave::%loop-player%} to false
+
+				spawn 20 zombie at location of loop-player
+
+		if {wave::%loop-player%} is 3:
+			if {nextwave::%loop-player%} is true:
+				
+				set {nextwave::%loop-player%} to false
+
+				spawn 45 zombie at location of loop-player
+
+		if {wave::%loop-player%} is 4:
+			if {nextwave::%loop-player%} is true:
+				
+				set {nextwave::%loop-player%} to false
+
+				spawn 70 zombie at location of loop-player
+
+		if {wave::%loop-player%} is 5:
+			if {nextwave::%loop-player%} is true:
+				
+				set {nextwave::%loop-player%} to false
+
+				spawn 100 zombie at location of loop-player
+
+
+every 1 tick:
+	loop all players in world "Colosseum-w1":
+		loop all blocks in radius 5 around loop-player:
+			add loop-blocks to {loc::%loop-player%}

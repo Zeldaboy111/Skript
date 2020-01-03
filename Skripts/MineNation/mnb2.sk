@@ -1,0 +1,116 @@
+options:
+	{mn::baan::%loop-player%::cooldown::houthakker} = {mn::baan::%player%::cooldown::houthakker}
+	{mn::baan::%loop-player%::cooldown::miner} = {mn::baan::%player%::cooldown::miner}
+	{mn::baan::%loop-player%::cooldown::bouwer} = {mn::baan::%player%::cooldown::bouwer}
+	{mn::baan::%loop-player%::cooldown::farmer} = {mn::baan::%player%::cooldown::farmer}
+	{mn::baan::%loop-player%::cooldown::soldaat} = {mn::baan::%player%::cooldown::soldaat}
+	{mn::baan::%loop-player%::cooldown::smid} = {mn::baan::%player%::cooldown::smid}
+	{mn::baan::%loop-player%::cooldown::enchanther} = {mn::baan::%player%::cooldown::enchanther}
+	{mn::baan::%loop-player%::cooldown::ontdekkingsreiziger} = {mn::baan::%player%::cooldown::ontdekkingsreiziger}
+
+	{mn::baan::%player%::houthakker::points} = {mn::baan::%loop-player%::houthakker::points}
+
+on enable:
+	loop all players in world "Minenation":
+		if {mn::baan::%loop-player%::cooldown::houthakker} is not set:
+			set {mn::baan::%loop-player%::cooldown::houthakker} to 0
+
+		if {mn::baan::%loop-player%::cooldown::bouwer} is not set:
+			set {mn::baan::%loop-player%::cooldown::bouwer} to 0
+
+		if {mn::baan::%loop-player%::cooldown::miner} is not set:
+			set {mn::baan::%loop-player%::cooldown::miner} to 0
+
+		if {mn::baan::%loop-player%::cooldown::farmer} is not set:
+			set {mn::baan::%loop-player%::cooldown::farmer} to 0
+
+		if {mn::baan::%loop-player%::cooldown::soldaat} is not set:
+			set {mn::baan::%loop-player%::cooldown::soldaat} to 0
+
+		if {mn::baan::%loop-player%::cooldown::smid} is not set:
+			set {mn::baan::%loop-player%::cooldown::smid} to 0
+
+		if {mn::baan::%loop-player%::cooldown::enchanther} is not set:
+			set {mn::baan::%loop-player%::cooldown::enchanther} to 0
+
+		if {mn::baan::%loop-player%::cooldown::ontdekkingsreiziger} is not set:
+			set {mn::baan::%loop-player%::cooldown::ontdekkingsreiziger} to 0
+
+every 1 tick:
+	loop all players in world "Minenation":
+		if {mn::baan::%loop-player%::houthakker::level} is 1:
+			if {mn::baan::%loop-player%::houthakker::points} is more than 10:
+				delete {mn::baan::%loop-player%::houthakker::points}
+				add 1 to {mn::baan::%loop-player%::houthakker::level}
+				send "&0[&b&lMineNation&0] &2Je bent nu level &a2&2!" to loop-player
+
+		if {mn::baan::%loop-player%::houthakker::level} is 2:
+			if {mn::baan::%loop-player%::houthakker::points} is more than 20:
+				delete {mn::baan::%loop-player%::houthakker::points}
+				add 1 to {mn::baan::%loop-player%::houthakker::level}
+				send "&0[&b&lMineNation&0] &2Je bent nu level &a3&2!" to loop-player
+
+		if {mn::baan::%loop-player%::houthakker::level} is 3:
+			if {mn::baan::%loop-player%::houthakker::points} is more than 30:
+				delete {mn::baan::%loop-player%::houthakker::points}
+				add 1 to {mn::baan::%loop-player%::houthakker::level}
+				send "&0[&b&lMineNation&0] &2Je bent nu level &a4&2!" to loop-player
+
+		if {mn::baan::%loop-player%::houthakker::level} is 4:
+			if {mn::baan::%loop-player%::houthakker::points} is more than 40:
+				delete {mn::baan::%loop-player%::houthakker::points}
+				add 1 to {mn::baan::%loop-player%::houthakker::level}
+				send "&0[&b&lMineNation&0] &2Je bent nu level &a5&2!" to loop-player
+
+
+on break of a log:
+	player's gamemode is not creative:
+		if {mn::baan::%player%::houthakker} is true:
+			if {mn::baan::%player%::cooldown::houthakker} is 0:
+
+				if {mn::baan::%player%::houthakker::level} is 1:
+					add 1 to {mn::baan::%player%::houthakker::points}
+					set {mn::baan::%player%::cooldown::houthakker} to 30
+				else:
+					send "&0[&b&lMineNation&0] &cJe hebt niet een hoog genoeg level om dit blok te breken, of je hebt niet de goede baan."
+					cancel event
+
+
+
+			else:
+				send "&0[&b&lMineNation&0] &cJe hebt nog een cooldown van &4&l%{mn::baan::%player%::cooldown::houthakker}% &csecondes."
+				cancel event
+
+on block place:
+	player's gamemode is not creative:
+		if {mn::baan::%player%::bouwer} is true:
+			
+		else:
+			cancel event
+		
+
+every 1 second:
+	loop all players in world "Minenation":
+		if {mn::baan::%loop-player%::cooldown::houthakker} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::houthakker}
+
+		if {mn::baan::%loop-player%::cooldown::miner} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::miner}
+
+		if {mn::baan::%loop-player%::cooldown::bouwer} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::bouwer}
+
+		if {mn::baan::%loop-player%::cooldown::farmer} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::farmer}
+
+		if {mn::baan::%loop-player%::cooldown::soldaat} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::soldaat}
+
+		if {mn::baan::%loop-player%::cooldown::smid} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::smid}
+
+		if {mn::baan::%loop-player%::cooldown::enchanther} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::enchanther}
+
+		if {mn::baan::%loop-player%::cooldown::ontdekkingsreiziger} is not 0:
+			remove 1 from {mn::baan::%loop-player%::cooldown::ontdekkingsreiziger}

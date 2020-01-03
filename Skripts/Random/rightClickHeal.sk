@@ -1,0 +1,20 @@
+options:
+	{hcooldown::%player%} = {hcooldown::%loop-player%}
+
+on join:
+	if {hcooldown::%player%} is not set:
+		set {hcooldown::%player%} to 0
+
+on rightclick:
+	clicked block is a emerald_block:
+		if {hcooldown::%player%} is 0:
+			heal player by 1 hearts
+			set {hcooldown::%player%} to 5
+
+every 1 second:
+	loop all players:
+		if {hcooldown::%loop-player%} is more than 0:
+			remove 1 from {hcooldown::%loop-player%}
+
+on rightclick on a villager:
+	close player's inventory

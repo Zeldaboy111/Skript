@@ -1,0 +1,64 @@
+#on join:
+#	set tab header to "" and footer to "" for player
+
+every 2 ticks:
+	loop all players in the world "lobby":
+		if {tab::lobby::%loop-player%} is not set:
+			set tab header to "&3[&bZeldaCraft&3]" and footer to "&3Welkom op ZeldaCraft!" for loop-player
+			set {tab::lobby::%loop-player%} to 1
+			stop
+		
+
+		if {tab::lobby::%loop-player%} is 0:
+			set tab header to "&3[&bZeldaCraft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 1
+			stop
+
+		if {tab::lobby::%loop-player%} is 1:
+			set tab header to "&3[&b&lZ&beldaCraft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player	
+			set {tab::lobby::%loop-player%} to 2
+			stop
+
+		if {tab::lobby::%loop-player%} is 2:
+			set tab header to "&3[&bZ&le&bldaCraft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 3
+			stop
+
+		if {tab::lobby::%loop-player%} is 3:
+			set tab header to "&3[&bZel&ld&baCraft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 4
+			stop
+
+		if {tab::lobby::%loop-player%} is 4:
+			set tab header to "&3[&bZeld&la&bCraft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 5
+			stop
+
+		if {tab::lobby::%loop-player%} is 5:
+			set tab header to "&3[&bZelda&lC&braft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 6
+			stop
+
+		if {tab::lobby::%loop-player%} is 6:
+			set tab header to "&3[&bZeldaC&lr&baft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 7
+			stop
+
+		if {tab::lobby::%loop-player%} is 7:
+			set tab header to "&3[&bZeldaCr&la&bft&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 8
+			stop
+
+		if {tab::lobby::%loop-player%} is 8:
+			set tab header to "&3[&bZeldaCra&lf&bt&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 9
+			stop
+
+		if {tab::lobby::%loop-player%} is 9:
+			set tab header to "&3[&bZeldaCraf&lt&3]" and footer to "&3Welkom op ZeldaCraft" for loop-player
+			set {tab::lobby::%loop-player%} to 0
+			stop
+
+
+on join:
+	set max health of player to 10

@@ -1,0 +1,5 @@
+every 1 tick:
+	loop all players in world "Survival":
+		wipe loop-player's sidebar
+		set name of sidebar of loop-player to "&3&lSurvival"
+		set score "&b&lGamemode: &bSurvival" in sidebar of loop-player to 10

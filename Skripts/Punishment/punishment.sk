@@ -1,0 +1,127 @@
+options:
+	{max::bantime::%uuid of arg 1%} = {max::bantime::%uuid of loop-value%}
+	{time::ban::%uuid of arg 1%} = {time::ban::%uuid of loop-value%}
+	{ban::%uuid of arg 1%} = {ban::%uuid of player%}
+	{playerb::ban::%uuid of arg 1%} = {playerb::ban::%uuid of loop-value%}
+
+on connect:
+	loop {x-raytempbanned::*}:
+		set {ban::%uuid of loop-value%} to true
+		if {ban::%uuid of loop-value%} is true:
+			set {ban::unbandatekick::%uuid of player%} to {max::bantime::%uuid of loop-value%}-{time::ban::%uuid of loop-value%}
+
+			kick player due to "&4Je bent gebanned!%nl%&4Rede: &c%{ban::reason::%uuid of player%}%%nl%&4Bandatum: &c%{ban::date::%uuid of player%}%%nl%&4Unban over: &c%{ban::unbandatekick::%uuid of player%}% &4dagen"
+
+every 1 second:
+	loop {x-raytempbanned::*}:
+		set {max::bantime::%uuid of loop-value%} to 3
+		if {time::ban::%uuid of loop-value%} is more than {max::bantime::%uuid of loop-value%}-1:
+
+			execute console command "punban %loop-value%"
+			delete {ban::%uuid of loop-value%}
+			delete {time::ban::%uuid of loop-value%}
+			delete {max::bantime::%uuid of loop-value%}
+			remove "%uuid of loop-value%" from {x-raytempbanned::*}
+			stop
+			
+			
+		else:
+			
+			#send "%{max::bantime::%uuid of loop-value%}% + %{time::ban::%uuid of loop-value%}%" to console
+			set {max::bantime::%uuid of loop-value%} to 3
+			add 1 to {time::ban::%uuid of loop-value%}
+			stop
+
+command /punishment [<offline player>]:
+	aliases: /pu
+	trigger:
+		if player has permission "punishment":
+			if arg 1 is set:
+				open chest with 2 rows named "&4-=-=-&cBan &c%arg 1%&4-=-=-" to player
+
+				format slot 0 of player with diamond named "&3X-Ray Hacks" with lore "&7Ban voor: 3 dagen" to close then run [execute console command "/cpunishment %arg 1% X-Ray 3 %player%"]
+				stop
+			else:
+				send "&c<Punishment> &4Doe &c/punishment [speler] &4om deze command uit te voeren."
+				stop
+		else:
+			send "&c<Punishment> &4Je hebt onvoldoende rechten om deze command uit te voeren."
+			stop
+
+#===================================================
+
+command /cpunishment [<offline player>] [<text>] [<number>] [<offline player>]:
+	executable by: console
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				#set {tempban.%arg 1%} to {banntime.%arg 1%}+arg 3
+				#add arg 1 to {tempbanned::*}
+				set {playerb::ban::%uuid of arg 1%} to "%arg 1%"
+				set {ban::world::%uuid of arg 1%} to world of arg 1
+
+				set {ban::reason::%uuid of arg 1%} to arg 2
+				set {ban::date::%uuid of arg 1%} to now
+				set {ban::unbandate::%uuid of arg 1%} to arg 3
+
+				set {time::ban::%uuid of arg 1%} to 0
+				set {max::bantime::%uuid of arg 1%} to arg 3
+
+				set {ban::%uuid of arg 1%} to true
+				add "%uuid of arg 1%" to {x-raytempbanned::*}
+				
+				send "&2De speler: &a%{ban::player::%uuid of arg 1%}% &2is succesvol gebanned:" to arg 4
+				send "&2Speler: &a%{ban::player::%uuid of arg 1%}%" to arg 4
+				send "&2Datum: &a%{ban::date::%uuid of arg 1%}%" to arg 4
+				send "&2Rede: &a%{ban::reason::%uuid of arg 1%}%" to arg 4
+					
+
+					
+
+				loop all players in world "%{ban::world::%uuid of arg 1%}%":
+					send "&4<&cBanned&4> De speler: &c%{ban::player::%uuid of arg 1%}% &4is gebanned met de rede: &c%{ban::reason::%uuid of arg 1%}%" to loop-player
+					
+				kick arg 1 due to "&4Je bent gebanned!%nl%&4Rede: &c%{ban::reason::%uuid of arg 1%}%%nl%&4Bandatum: &c%{ban::date::%uuid of arg 1%}%%nl%&4Unban over: &c%{ban::unbandate::%uuid of arg 1%}% &4dagen"
+
+				strike lightning at arg 1
+				wait 5 ticks
+				strike lightning at arg 1
+				wait 5 ticks
+				launch star firework colored blue and white at arg 1 timed 0.2
+				wait 1 ticks
+				launch star firework colored red and white at arg 1 timed 0.2
+				wait 1 ticks
+				launch star firework colored green and white at arg 1 timed 0.2
+				stop
+
+			else:
+				send "&c<CPunishment> &4Kan persoon niet bannen omdat: de &creden &4niet opgegeven is." to console
+				stop
+		else:
+			send "&c<CPunishment> &4Kan persoon niet bannen omdat: de &cnaam &4niet opgegeven is en de &creden &4is niet opgegeven." to console
+			stop
+
+command /punban <offline player>:
+	executable by: console
+	trigger:
+		if {time::ban::%uuid of arg 1%} is more than {max::bantime::%uuid of arg 1%}-1:
+			delete {ban::%uuid of arg 1%}
+			delete {time::ban::%uuid of arg 1%}
+			delete {max::bantime::%uuid of arg 1%}
+			remove "%uuid of arg 1%" from {x-raytempbanned::*}
+			stop
+
+command /punban2 <offline player>:
+	executable by: console
+	trigger:
+		delete {ban::%uuid of arg 1%}
+		delete {time::ban::%uuid of arg 1%}
+		delete {max::bantime::%uuid of arg 1%}
+		remove "%uuid of arg 1%" from {x-raytempbanned::*}
+		remove arg 1 from {x-raytempbanned::*}
+		send "&aUnbanned %arg 1%" to console
+		stop
+
+command /pm:
+	trigger:
+		execute player command "/sk reload punishment"

@@ -1,0 +1,267 @@
+on load:
+	#if file "Files\Tikkertje\Lobbyloc.yml" doesn't exist:
+	#	create file "Files\Tikkertje\Lobbyloc.yml"
+
+	if file "Files\Tikkertje\Maplist.yml" doesn't exist:
+		create file "Files\Tikkertje\Maplist.yml"
+
+	if file "Files\Tikkertje\Teaminfo.yml" doesn't exist:
+		create file "Files\Tikkertje\Teaminfo.yml"
+
+every 1 tick:
+	delete {tikkertje.maps.list::*}
+	set {tikkertje.maps.list::*} to yaml list "Tikkertje.maps.list.names" of file "Files\Tikkertje\Teaminfo.yml"
+	#set {tikkertje.maps.lobby::*} to yaml list "Tikkerte.maps.lobby" of file "Files\Tikkertje\Lobbyloc.yml"
+	
+function createTeams(s1: string, s2: string, path: string, file: string):
+	set {_s1} to {_s1} parsed as a number
+
+	loop {_s1} times:
+		add 1 to {_added}
+		send "%{_added}%" to console
+		add "%{_added}%" to yaml list "%{_path}%" of file "%{_file}%"
+		
+
+
+command /tikkertje [<text>] [<text>] [<text>]:
+	aliases: tik
+	trigger:
+		if player has permission "tikkertje.*":
+			if arg 1 is "help":
+				send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+				json("%player%", "&3&l/tikkertje mlist||ttp:&9&k::&f &5Krijg de map list &9&k::&f||cmd:/tikkertje mlist")
+				json("%player%", "&3&l/tikkertje lobby||ttp:&9&k::&f &5Ga naar de lobby &9&k::&f||cmd:/tikkertje lobby")
+				json("%player%", "&3&l/tikkertje setlobby||ttp:&9&k::&f &5Zet de lobby &9&k::&f||cmd:/tikkertje setlobby")
+				json("%player%", "&3&l/tikkertje createg [mapnaam] [aantal teams]||ttp:&9&k::&f &5Maak een game &9&k::&f||sgt:/tikkertje createg [mapnaam] [aantal teams]")
+				json("%player%", "&3&l/tikkertje delg [mapnaam]||ttp:&9&k::&f &5Delete een game &9&k::&f||sgt:/tikkertje delg [mapnaam]")
+				json("%player%", "&3&l/tikkertje setglobby [mapnaam] [team]||ttp:&9&k::&f &5Zet de lobby van een game &9&k::&f||sgt:/tikkertje setglobby [mapnaam] [team]")
+				json("%player%", "&3&l/tikkertje goglobby [mapnaam] [team]||ttp:&9&k::&f &5Ga naar de lobby van een game &9&k::&f||sgt:/tikkertje goglobby [mapnaam] [team]")
+				#json("%player%", "&3&l/tikkertje setgspawn [mapnaam] [team]||ttp:&9&k::&f &5Zet de spawn van een team &9&k::||sgt:/tikkertje setgspawn [mapnaam] [team]")
+				send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+				stop
+
+			if arg 1 is "mlist":
+				send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+				send "&5Dit is de lijst met alle maps:"
+				send "&d&l%{tikkertje.maps.list::*}%"
+				send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+				stop
+
+			if arg 1 is "lobby":
+				if {tikkertje.lobby.loc} is set:
+					teleport player to {tikkertje.lobby.loc}
+
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					send "&5Succesvol naar de lobby gegaan"
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					stop
+
+				else:
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					send "&5De lobby is nog niet gezet, doe:"
+					json("%player%", "&3&l/tikkertje setlobby||ttp:&9&k::&f &5Zet de lobby &9&k::&f||cmd:/tikkertje setlobby")
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					stop
+
+			if arg 1 is "setlobby":
+
+				set {tikkertje.lobby.loc} to location of player
+
+				send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+				send "&5Succesvol de lobby getzet"
+				send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+				stop
+
+
+			if arg 1 is "createg":
+				if arg 2 is set:
+					if "%{tikkertje.maps.list::*}%" doesn't contain "%arg 2%":
+						if arg 3 is set:
+
+							#delete {tikkertje.maps.%arg 2%.teams::*}
+							#set {tikkertje.maps.%arg 2%.teams::*} to yaml list "Tikkertje.maps.lobby.%arg 2%.teams" of file "Files\Tikkertje\Teaminfo.yml"
+
+
+							add "%arg 2%" to yaml list "Tikkertje.maps.list.names" of file "Files\Tikkertje\Teaminfo.yml"
+							
+							createTeams("%arg 3%", "%arg 3%", "Tikkertje.maps.lobby.%arg 2%.teams", "Files\Tikkertje\Teaminfo.yml")
+
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+							send "&5Succesvol de map aangemaakt met de volgende eigenschappen:"
+							send "&5Naam: &d&l%arg 2%"
+							send "&5Aantal spelers: &d&l%arg 3%"
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+
+							stop
+							
+						else:
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+							json("%player%", "&4Doe: ||&3&l/tikkertje createg [mapnaam] [aantal teams]||ttp:&9&k::&f &5Maak een game &9&k::&f||sgt:/tikkertje createg [mapnaam] [aantal teams]")
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+							stop
+
+					else:
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						send "&4Deze map bestaat al"
+						json("%player%", "&4Doe: ||&3&l/tikkertje createg [mapnaam] [aantal teams]||ttp:&9&k::&f &5Maak een game &9&k::&f||sgt:/tikkertje createg [mapnaam] [aantal teams]")
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						stop
+
+				else:
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					json("%player%", "&4Doe: ||&3&l/tikkertje createg [mapnaam] [aantal teams]||ttp:&9&k::&f &5Maak een game &9&k::&f||sgt:/tikkertje createg [mapnaam] [aantal teams]")
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					stop
+
+
+			if arg 1 is "delg":
+				if arg 2 is set:
+					if {tikkertje.maps.list::*} doesn't contain "%arg 2%":
+						
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						send "&4Deze map bestaat niet"
+						json("%player%", "&4Doe: ||&3&l/tikkertje mlist||ttp:&9&k::&f &5Krijg de map list &9&k::&f||cmd:/tikkertje mlist")
+						json("%player%", "&4Doe: ||&3&l/tikkertje delg [mapnaam]||ttp:&9&k::&f &5Delete een game &9&k::&f||sgt:/tikkertje delg [mapnaam]")
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						stop
+						
+
+					else:
+						
+						remove "%arg 2%" from yaml list "Tikkertje.maps.list.names" of file "Files\Tikkertje\Teaminfo.yml"
+						delete yaml list "Tikkertje.maps.lobby.%arg 2%" of file "Files\Tikkertje\Teaminfo.yml"
+						
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						send "&5Succesvol de map: &d&l%arg 2% &5verwijderd"
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+
+						stop
+
+				else:
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					send "&4Je moet nog een mapnaam opgeven"
+					json("%player%", "&4Doe: ||&3&l/tikkertje delg [mapnaam]||ttp:&9&k::&f &5Delete een game &9&k::&f||sgt:/tikkertje delg [mapnaam]")
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					stop
+
+
+			if arg 1 is "setglobby":
+
+				#arg 2 = map
+				#arg 3 = team
+
+				if arg 2 is set:
+					if "%{tikkertje.maps.list::*}%" contains "%arg 2%":
+						if arg 3 is set:
+							
+
+							set {tikkertje.maps.%arg 2%.teams::*} to yaml list "Tikkertje.maps.lobby.%arg 2%.teams" of file "Files\Tikkertje\Teaminfo.yml"
+								
+							#Detect of map het team (arg 3) niet heeft
+							if {tikkertje.maps.%arg 2%.teams::*} doesn't contain "%arg 3%":
+
+								send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+								send "&5Het team: &d%arg 3% &5bestaat niet in de map: &d%arg 2%"
+								json("%player%", "&5Doe:|| &3&l/tikkertje setglobby [mapnaam] [team]||ttp:&9&k::&f &5Zet de lobby &9&k::&f||sgt:/tikkertje setglobby [mapnaam] [team]")
+								send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+								stop
+
+							#De map heeft dit team wel
+							else:
+
+								set yaml value "Tikkertje.maps.lobby.%arg 2%.loc.%arg 3%" of file "Files\Tikkertje\Teaminfo.yml" to ""
+								set yaml value "Tikkertje.maps.lobby.%arg 2%.loc.%arg 3%" of file "Files\Tikkertje\Teaminfo.yml" to "%location of player%"
+								#delete yaml list "Tikkertje.maps.lobby.%arg 2%.loc.%arg 3%" of file "Files\Tikkertje\Teaminfo.yml"
+								#add "%location of player%" to yaml list "Tikkertje.maps.lobby.%arg 2%.loc.%arg 3%" of file "Files\Tikkertje\Teaminfo.yml"
+
+								send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+								send "&5Succesvol de lobby &d%arg 2% %arg 3% &5gezet."
+								send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+								stop
+
+						else:
+
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+							json("%player%", "&4Doe:|| &3&l/tikkertje setglobby [mapnaam] [team]||ttp:&9&k::&f &5Zet de lobby &9&k::&f||sgt:/tikkertje setglobby [mapnaam] [team]")
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+							stop
+
+
+					else:
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						send "&5Deze map bestaat niet."
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						stop
+
+				else:
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					json("%player%", "&4Doe:|| &3&l/tikkertje setglobby [mapnaam] [aantal teams]||ttp:&9&k::&f &5Zet de lobby &9&k::&f||sgt:/tikkertje setglobby [mapnaam] [team]")
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					stop
+
+			
+			if arg 1 is "goglobby":
+				if arg 2 is set:
+					send "%{tikkertje.maps.list::*}%"
+					if "%{tikkertje.maps.list::*}%" doesn't contain "%arg 2%":
+						
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						send "&5Deze map bestaat niet"
+						json("%player%", "&3&l/tikkertje goglobby [mapnaam] [team]||ttp:&9&k::&f &5Ga naar de lobby van een game &9&k::&f||sgt:/tikkertje goglobby [mapnaam] [team]")
+						send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+						stop
+					
+					else:
+						if arg 3 is set:
+
+							delete {tikkertje.maps.%arg 2%.teams::*}
+							set {tikkertje.maps.%arg 2%.teams::*} to yaml list "Tikkertje.maps.lobby.%arg 2%.teams" of file "Files\Tikkertje\Teaminfo.yml"
+
+							if {tikkertje.maps.%arg 2%.teams::*} doesn't contain "%arg 3%":
+								send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+								send "&5De map: &d%arg 2% &5heeft het team: &d%arg 3% &5niet"
+								json("%player%", "&3&l/tikkertje goglobby [mapnaam] [team]||ttp:&9&k::&f &5Ga naar de lobby van een game &9&k::&f||sgt:/tikkertje goglobby [mapnaam] [team]")
+								send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+								stop
+
+							else:
+
+								delete {tikkertje.maps.teams}
+								
+								set {tikkertje.maps.teams} to yaml value "Tikkertje.maps.lobby.%arg 2%.loc.%arg 3%" of file "Files\Tikkertje\Teaminfo.yml"
+
+								set {loc} to {tikkertje.maps.teams}
+								replace every "x:", "y:", "z:" and " " with "" in {loc}
+								replace every "," with " " in {loc}
+
+								execute console command "/teleport %player% %{loc}%"
+								stop
+
+						else:
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+							json("%player%", "&3&l/tikkertje goglobby [mapnaam] [team]||ttp:&9&k::&f &5Ga naar de lobby van een game &9&k::&f||sgt:/tikkertje goglobby [mapnaam] [team]")
+							send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+							stop
+						
+
+				else:
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					json("%player%", "&3&l/tikkertje goglobby [mapnaam] [team]||ttp:&9&k::&f &5Ga naar de lobby van een game &9&k::&f||sgt:/tikkertje goglobby [mapnaam] [team]")
+					send "&5==========&9&k::&d&lTikkertje&9&k::&5=========="
+					stop
+
+
+			else:
+				json("%player%", "&d&lTikkertje &5>> &bDoe:|| &3&l/tikkertje help||ttp:&9&k::&f &5Krijg de help pagina &9&k::||cmd:/tikkertje help")
+				stop
+
+		else:
+			send "&d&lTikkertje &5>> &4Je hebt &convoldoende permissies &4om deze command uit te voeren"
+			stop
+
+
+on damage:
+	if victim is in world "Tikkertje":
+		if attacker is in world "Tikkertje":
+			send "&5[&d&lTikkertje&5] &4Je bent getikt door: &c&l%attacker%" to victim
+			send "&5[&d&lTikkertje&5] &2Je hebt &a&l%victim% &2getikt" to attacker

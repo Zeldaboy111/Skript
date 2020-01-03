@@ -1,0 +1,27 @@
+options:
+	{rank::%player%} = {rank::%loop-player%}
+
+every 1 second:
+	loop all players in world "lobby":
+		wipe loop-player's sidebar
+		set name of sidebar of loop-player to "&4&lLobby"
+		set score "" in sidebar of loop-player to 10
+		set score "&c&lRank: %{rank::%loop-player%}%" in sidebar of loop-player to 9
+		stop
+
+
+	loop all players in world "survival":
+		wipe loop-player's sidebar
+		stop
+
+	loop all players in world "kingdom":
+		wipe loop-player's sidebar
+		stop
+
+	loop all players in world "creative":
+		wipe loop-player's sidebar
+		stop
+	
+	loop all players in world "skywars":
+		wipe loop-player's sidebar
+		stop

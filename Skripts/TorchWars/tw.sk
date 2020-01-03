@@ -1,0 +1,86 @@
+options:
+	{points::teamred::%loop-player%::*} = {points::teamblue::%player%::*}
+	{points::teamblue::%loop-player%::*} = {points::teamblue::%player%::*}
+
+on load:
+	set {tw::text::title} to "&7<&8TW&7>&8"
+	set {tw::text::nep} to "%{tw::text::title}% &4Je hebt &convoldoende permissies &4hiervoor."
+
+	if file "Files\TW\Maps\maps.yml" doesn't exist:
+		create file "Files\TW\Maps\maps.yml"
+
+every 1 tick:
+	delete {tw::maps::list::*}
+	#delete {tw::maps::numbers::*}
+	set {tw::maps::list::*} to yaml list "maps.list" of file "Files\TW\Maps\maps.yml"
+	#set {tw::maps::numbers::*} to yaml list "maps.list.numbers.%{_arg2}%" of file "Files\TW\Maps\maps.yml"
+
+on break of torch:
+	if player is in world "tw-g1":
+		cancel event
+		launch star firework colored green and white at player timed 0.3
+		#json("%player%", "This is a json message: &c&oClick here for no reason!||ttp:&lReally, click your mouse!||cmd:/json @a %player% click their mouse on json")
+
+
+
+every 1 second:
+	loop all players in world "tw-g1":
+		if {points::teamred::%loop-player%::*} is not set:
+			set {points::teamred::%loop-player%::*} to 0
+		if {points::teamblue::%loop-player%::*} is not set:
+			set {points::teamblue::%loop-player%::*} to 0
+
+		wipe loop-players sidebar
+		set name of sidebar of loop-player to "&6&lTW:"
+		set score "&4&lRed: %{points::teamred::%loop-player%::*}%" in sidebar of loop-player to 10
+		set score "&1&lBlue: %{points::teamblue::%loop-player%::*}%" in sidebar of loop-player to 9
+
+
+command /tw [<text>] [<text>] [<text>] [<text>] [<text>]:
+	trigger:
+		if player has permission "tw.*":
+			if arg 1 is "help":
+				send "&7=-=-=-=-=-=%{tw::text::title}%&7=-=-=-=-=-="
+				json("%player%", "&8&l/tw create [mapnaam] [mapnummer] [maxplayers]||ttp:&lKlik om te executen.||sgt:/tw create|| &9&k::&f &7Maak een tw-map.")
+				json("%player%", "&8&l/tw delete [mapnaam] [mapnummer]||sgt:/tw delete||ttp:&lKlik om te executen.|| &9&k::&f &7Delete een tw-map.")
+				stop
+
+			if arg 1 is "create":
+				if arg 2 is set:
+					if arg 3 is set:
+						if arg 4 is set:
+							delete {tw::maps::list::numbers::*}
+							set {tw::maps::list::numbers::*} to yml list "maps.numbers.%arg 2%" of file "Files\TW\Maps\maps.yml"
+
+							send "%{tw::maps::list::*}%"
+							if {tw::maps::list::*} contains arg 2:								
+								if {tw::maps::list::numbers::*} doesn't contain arg 3:
+									add arg 3 to yaml list "maps.numbers.%arg 2%" of file "Files\TW\Maps\maps.yml"
+									send "x"
+									if {tw::maps::list::*} contains arg 2:
+										send "x2"
+									else:
+										send "x3"
+										add arg 2 to yaml list "maps.list" of file "Files\TW\Maps\maps.yml"
+
+							else:
+								send "x4"
+								stop
+
+						else:
+							send "%{tw::text::title}% &4Je moet nog een &cmaximaal aantal spelers dat kan joinen &4opgeven."
+							stop
+					else:
+						send "%{tw::text::title}% &4Je moet nog een &cmapnummer en maximaal aantal spelers dat kan joinen &4opgeven."
+						stop
+				else:
+					send "%{tw::text::title}% &4Je moet nog een &cmapnaam, mapnummer en maximaal aantal spelers dat kan joinen &4opgeven."
+					stop
+
+			else:
+				json("%player%", "%{tw::text::title}% Doe|| &7/tw help||ttp:&lKlik hier voor de help pagina.||cmd:/tw help|| &8voor meer info")
+				stop
+
+		else:
+			send "%{tw::text::nep}%"
+			stop

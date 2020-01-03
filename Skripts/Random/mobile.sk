@@ -1,0 +1,88 @@
+options:
+	{mb::messages::%{_p}%::%{_t}%::%{messages::%{_p}%::%{_t}%}%} = {mb::messages::%{_p}%::%{_sendTo}%::%{_count}%}
+	{mb::messages::%{_t}%::%{_p}%::%{messages::%{_p}%::%{_t}%}%} = {mb::messages::%{_p}%::%{_sendTo}%::%{messages::%{_p}%::%{_t}%}%}
+	
+	{mb::messages::sender::%{_p}%::%{_c}%} = {mb::messages::sender::%{_t}%::%{_p}%}
+
+	{messages::%{_p}%::%{_t}%::%{_count}%} = {messages::%{_p}%::%{_sendTo}%::%{_count}%}
+	{messages::%{_t}%::%{_p}%::%{_count}%} = {messages::%{_sendTo}%::%{_p}%::%{_count}%}
+	{messages::%{_p}%::%{_t}%::%{_count}%} = {messages::%{_t}%::%{_p}%::%{_count}%}
+
+
+on enable:
+	set {mb::prefix} to "&3[&dMobile&3] &f>> &8"
+
+on join:
+	if {mb::whatsapp::%player%::contacten::*} is not set:
+		add player to {mb::whatsapp::%player%::contacten::*}
+
+
+command /mobile [<text>] [<text>] [<text>] [<text>]:
+	aliases: /mb
+	trigger:
+		if arg 1 is "get":
+			give player a book named "&8Mobile" with lore "&7Mobieltje"
+			stop
+
+		if arg 1 is "whatsapp" OR "app":
+			if arg 2 is "read":
+				whatsapp(player, "Main")
+				stop
+			if arg 2 is "send":
+				if arg 3 is set:
+					if {mb::whatsapp::%player%::contacten::*} contains "%arg 3%":
+						if arg 4 is set:
+							sendWA(player, "%arg 3%", "%arg 4%")
+							stop
+
+						else:
+							send "%{mb::prefix}% &4Je moet nog een &cbericht &4opgeven."
+							stop
+
+					else:
+						send "%{mb::prefix}% &4De persoon &c%arg 3% &4staat niet tussen je contacten."
+						stop
+
+				else:
+					send "%{mb::prefix}% &4Je moet nog een &ccontact &4en &cbericht &4opgeven."
+					stop
+
+
+on rightclick:
+	player is holding a book named "&8Mobile" with lore "&7Mobieltje":
+		open chest with 1 rows named "&8Mobile" to player
+		make gui slot 0 of player with a green dye named "&2Whatsapp" to run function whatsapp(player, "Main")
+
+
+function sendWA(p: Player, t: String, m: String):
+	if {messages::%{_p}%::%{_t}%} is more than 99:
+		set {messages::%{_p}%::%{_t}%} to 0
+
+	set {_count} to {messages::%{_p}%::%{_t}%}
+	delete {mb::messages::%{_p}%::%{_t}%::%{_count}%}
+	delete {mb::messages::%{_t}%::%{_p}%::%{_count}%}
+
+	set {mb::messages::%{_p}%::%{_t}%::%{_count}%} to {_m}
+	set {mb::messages::%{_t}%::%{_p}%::%{_count}%} to {_m}
+	set {mb::messages::sender::%{_p}%::%{_t}%::%{_count}%} to {_p}
+	add 1 to {messages::%{_p}%::%{_t}%}
+
+function whatsapp(p: Player, s: String):
+	#Jezelf in contacten
+	if {_s} is "Main":
+		open chest with 1 rows named "&2Contacten - Whatsapp" to {_p}
+		make gui slot 0 of {_p} with a book named "&6%{_p}%" to close then run function whatsapp({_p}, "Read.%{_p}%")
+		stop
+
+	if {_s} contains "Read.":
+
+		replace all "Read." in {_s} with ""
+		set {_sendTo} to {_s}
+
+		open chest with 6 rows named "&2%{_sendTo}% - Whatsapp" to {_p}
+		set {_count} to 0
+		loop {messages::%{_p}%::%{_sendTo}%}-1 times:
+			set {_count} to loop-value
+			make gui slot {_count}-1 of {_p} with a paper named "%{mb::messages::%{_p}%::%{_sendTo}%::%{_count}%}%" with lore "&7Sender: %{mb::messages::sender::%{_p}%::%{_sendTo}%::%{_count}%}%" to close
+
+

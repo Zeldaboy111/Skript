@@ -1,0 +1,195 @@
+every 1 tick:
+	delete {sw::maps::list::*}
+	set {sw::maps::list::*} to varFile("maps.list", "plugins\Zkywars\maps\spawn.yml")
+#Remove
+#SetSpawn
+
+on load:
+	set {sw::text::title} to "&1[&8Zkywars&1]&3"
+	newFile("plugins\Zkywars\maps\spawn.yml")
+
+command /skywars [<text>] [<text>] [<text>] [<text>] [<text>]:
+	aliases: sw
+	trigger:
+		if player has permission "sw.create" OR "sw.*":
+			if arg 1 is "help":
+				send "&b&lHelp pagina Skywars:"
+				send "&bJe kan ipv /sw ook /skywars doen"
+				send "&3/sw create [mapnaam] [mapnummer] [max aantal spelers] &7::&f &bMaak een map met het aantal %nL%maximale spelers."
+				send "&bJe kan de spawn zetten via plugins\Zkywars\maps\spawn.yml"
+				send "&bOf via de volgende command:"
+				send "&3/sw creates [mapnaam] [mapnummer] [aantal spelers] [kleur voor aantal spelers] &7::&f &bMaak een mapsign met een naam, gebruik een & teken voor kleuren."
+				send "&3/sw delete [mapnaam] [mapnummer] &7::&f &bDelete een map."
+				send "&3/sw deletes &7::&f &bDelete een Zkywars Sign."
+				stop
+
+			if arg 1 is "create":
+				if arg 2 is set:
+					if arg 3 is set:
+						if arg 4 is set:
+
+							delete {sw::maps::list::numbers::*}
+							set {sw::maps::list::numbers::*} to yml list "maps.numbers.%arg 2%" of file "plugins\Zkywars\maps\spawn.yml"
+
+							if {sw::maps::list::*} contains arg 2:								
+								if {sw::maps::list::numbers::*} doesn't contain arg 3:
+									add arg 3 to yaml list "maps.numbers.%arg 2%" of file "plugins\Zkywars\maps\spawn.yml"
+
+									if {sw::maps::list::*} contains arg 2:
+
+									else:
+										add arg 2 to yaml list "maps.list" of file "plugins\Zkywars\maps\spawn.yml"
+									
+									
+
+									send "%{sw::text::title}% Succesvol de map gemaakt met de volgende eigenschappen:"
+									send "&3Naam: &b%arg 2%"
+									send "&3Mapnummer: &b%arg 3%"
+									send "&3Maximaal aantal spelers: &b%arg 4%"
+									stop
+									
+								else:
+									send "%{sw::text::title}% Er bestaat al een map met deze naam, en dit nummer."
+									send "%{sw::text::title}% Kies een ander nummer, of een andere mapnaam."
+									stop
+
+									
+							else:
+									
+								add arg 2 to yaml list "maps.list" of file "plugins\Zkywars\maps\spawn.yml"
+								add arg 3 to yaml list "maps.numbers.%arg 2%" of file "plugins\Zkywars\maps\spawn.yml"
+
+								send "%{sw::text::title}% Succesvol de map gemaakt met de volgende eigenschappen:"
+								send "&3Naam: &b%arg 2%"
+								send "&3Mapnummer: &b%arg 3%"
+								send "&3Maximaal aantal spelers: &b%arg 4%"
+								stop
+
+						else:
+							send "%{sw::text::title}% Je moet nog een &bmaximaal aantal spelers &3opgeven."
+							stop
+					else:
+						send "%{sw::text::title}% Je moet nog een &bmapnummer &3en een &bmaximaal aantal spelers &3opgeven."
+						stop
+
+				else:
+					send "%{sw::text::title}% Je moet nog een &bmapnaam, mapnummer &3en een &bmaximaal aantal spelers &3opgeven."
+					stop
+
+			if arg 1 is "creates":
+				if arg 2 is set:
+					if arg 3 is set:
+						if arg 4 is set:
+							if targeted block is a sign:
+								
+								if arg 5 is set:
+									set {arg 5} to arg 5
+									replace "&" with "§" in {arg 5}
+
+								if arg 5 is not set:
+									set {arg 5} to "&6&l"
+
+								send "%{sw::text::title}% Succesvol een Zkywars sign gemaakt met de volgende eigenschappen:"
+								send "&3Naam: &b%arg 2%"
+								send "&3Mapnummer: &b%arg 3%"
+								send "&3Maximaal aantal spelers: &b%arg 4%"
+								send "&3Kleur: %{arg 5}%%arg 2%"
+
+
+								set line 1 of targeted block to "%{arg 5}%%arg 2%"
+								set line 3 of targeted block to "&5&lPlayers"
+								set line 4 of targeted block to "&5&l0 / %arg 3%"
+
+								set {_loc} to location of targeted block
+								set {sw::maps::isamap::%{_loc}%} to true
+
+								stop
+							else:
+								send "%{sw::text::title}% Dit is geen sign."
+								stop
+					
+						else:
+							send "%{sw::text::title}% Je moet nog &bhet aantal spelers dat kan joinen &3opgeven."
+							stop
+					
+					else:
+						send "%{sw::text::title}% Je moet nog een &bmapnummer &3en &bhet aantal spelers dat kan joinen &3opgeven."
+						stop
+
+				else:
+					send "%{sw::text::title}% Je moet nog de &bnaam &3en het &bmaximaal aantal spelers dat kan joinen &3opgeven."
+					stop
+
+			if arg 1 is "delete":
+				arg 2 is set:
+					if {sw::maps::list::*} contains arg 2:
+						if arg 3 is set:
+							delete {sw::maps::numbers::%arg 2%::*}
+							set {sw::maps::numbers::%arg 2%::*} to yaml list "maps.numbers.%arg 2%" of file "plugins\Zkywars\maps\spawn.yml"
+							if {sw::maps::numbers::%arg 2%::*} contains arg 3:
+								send "%{sw::text::title}% De map wordt verwijderd, dit is de map die verwijderd wordt:"
+								send "&3Mapnaam: &b&l%arg 2%"
+								send "&3Mapnummer: &b&l%arg 3%"						
+
+								remove "%arg 3%" from yaml list "maps.numbers.%arg 2%" of file "plugins\Zkywars\maps\spawn.yml"
+								stop
+							else:
+								send "%{sw::text::title}% Dit mapnummer bestaat niet."
+								send "%{sw::text::title}% Dit zijn alle mapnummers: &b&l%{sw::maps::numbers::%arg 2%::*}%"
+								stop
+						else:
+							send "%{sw::text::title}% Je moet nog een &bmapnummer &3opgeven."
+							stop
+
+					else:
+						send "%{sw::text::title}% Dit is geen map."
+						send "%{sw::text::title}% Dit zijn alle maps: &b&l%{sw::maps::list::*}%"
+						stop
+
+				else:
+					send "%{sw::text::title}% Je moet nog een &bmapnaam &3en &bmapnummer &3opgeven."
+					stop
+
+			if arg 1 is "deletes":
+				if targeted block of player is a sign:
+					set {_loc} to location of targeted block
+					if {sw::maps::isamap::%{_loc}%} is true:
+						send "%{sw::text::title}% Deze Zkywars Sign is verwijderd. Je kan hem nu weghalen."
+						set {sw::maps::isamap::%{_loc}%} to false
+						stop
+
+					else:
+						send "%{sw::text::title}% Dit is geen Zkywars Sign."
+						stop
+
+				else:
+					send "%{sw::text::title}% Dit is geen sign."
+					stop
+
+			else:
+				send "%{sw::text::title}% Doe &b/sw help &3voor meer info"
+				stop
+
+
+
+		else:
+			send "%{sw::text::title}% &4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+			stop
+
+
+on break of a sign:
+	set {_loc} to location of targeted block
+	if {sw::maps::isamap::%{_loc}%} is true:
+		cancel event
+
+
+on click:
+	targeted block is a sign:
+		set {_loc} to location of targeted block
+		if {sw::maps::isamap::%{_loc}%} is true:
+			set {_line1::%{_loc}%} to uncolored "%line 1 of targeted block%"
+			set {_line4::%{_loc}%} to uncolored "%line 4 of targeted block%"
+
+			set {_char::*} to {_line4::%{_loc}%} split at ""
+			if {_char::1} is not {_char::5}:
+				cancel event

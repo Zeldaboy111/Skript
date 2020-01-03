@@ -1,0 +1,102 @@
+command /head [<material>]:
+	trigger:
+		if arg 1 is set:
+			if id of arg 1 is greater than 255:
+				send "&cJe kan dit item niet dragen op je hoofd"
+				stop
+
+			player doesn't have argument 1:
+				if player doesn't have permission "head.bypass.item":
+					send "&cJe hebt dit &4&l%arg 1% &cniet in je inventory"
+					stop
+
+			if helmet slot of player is not empty:
+				send "&cJe hebt al iets op je hoofd"
+				stop
+
+			if player has permission "head.bypass.item":
+				send "&2Je hebt &a&l%arg 1% &2op gezet"
+				set helmet slot of player to argument 1
+				remove argument 1 from player's inventory
+
+
+		#if arg 1 is not set
+		else:
+			send "&2Klik &a&lrechtermuisknop met een item &2om &a&lhet item &2op je hoofd te zetten"
+			set {itemtohead::%player%} to 1
+
+
+on rightclick:
+	if {itemtohead::%player%} is 1:
+		if helmet slot of player is empty:
+			set {itemtohead::%player%} to 0
+			send "&2Je hebt &a&l%item% &2op gezet"
+			set helmet slot of player to item
+			remove item from player's inventory
+			stop
+
+		else:
+			send "&cJe hebt al iets op je hoofd"
+
+on place:
+	if {itemtohead::%player%} is 1:
+		cancel event
+#===============================================================
+options:
+	{healcooldown::%player%} = {healcooldown::%loop-player%}
+	{healcooldown::cooldown::%player%} = {healcooldown::cooldown::%arg 1%}
+
+command /healcooldown [<offline player>] [<text>]:
+	trigger:
+		if player has permission "healcooldown":
+			if arg 1 is set:
+				if arg 2 is "true":
+					send "&2Je hebt de heal cooldown voor &a&l%arg 1% &2aangezet"
+					set {healcooldown::cooldown::%arg 1%} to true
+					stop
+				if arg 2 is "false":
+					send "&2Je hebt de heal cooldown voor &a&l%arg 1% &2uitgezet"
+					set {healcooldown::cooldown::%arg 1%} to false
+					stop
+				else:
+					send "&cJe moet nof &4&ltrue &c of &4&lfalse &cinvoeren"
+					stop
+			else:
+				send "&cJe moet nog &4&leen speler &cinvoeren"
+				stop
+		else:
+			send "&cJe hebt &4&lonvoldoende permissies &chiervoor"
+			stop
+
+command /heal [<offline player>]:
+	trigger:
+		if player has permission "heal":
+			if arg 1 is not set:
+				if {healcooldown::cooldown::%player%} is true:
+					if {healcooldown::%player%} is 0:
+						set {healcooldown::%player%} to 60
+						send "&2Je bent gehealed"
+						add 10 to the player's health
+						add 10 to the player's food
+						stop
+					else:
+						send "&cJe moet nog &4%{healcooldown::%player%}% secondes &cwachten"
+				else:
+					send "&2Je bent gehealed"
+					add 10 to the player's health
+					add 10 to the player's food
+					stop
+			if arg 1 is set:
+				send "&2Je hebt &a%arg 1% &2gehealed"
+				stop
+		else:
+			send "&cJe hebt &4onvoldoende permsisies &chiervoor"
+			stop
+
+every 1 second:
+	loop all players:
+		if {healcooldown::%loop-player%} is more than 0:
+			remove 1 from {healcooldown::%loop-player%}
+
+		if {healcooldown::%loop-player%} is not set:
+			set {healcooldown::%loop-player%} to 1

@@ -1,0 +1,71 @@
+options:
+	{rank::%player%::text} = {rank::%loop-player%::text}
+
+on join:
+	if {rank::%player%::text} is not set:
+		set {rank::%player%::text} to "&6[&eSpeler&6]"
+		set {name::%player%::text} to "&6[&e%player%&6] &6>> &f"
+
+on load:
+	set {ranks::text::title} to "&1[&3Ranks&1] &3"
+
+command /setrank [<offline player>] [<text>] [<text>]:
+	trigger:
+		if player has permission "setrank.*":
+			if arg 1 is set:
+				if arg 2 is set:
+					if arg 3 is set:
+						set {arg2::%arg 2%} to arg 2
+						set {arg3::%arg 3%} to arg 3
+						replace "&" with "§" in {arg2::%arg 2%}
+						replace "&" with "§" in {arg3::%arg 3%}
+						replace "player" with "%arg 1%" in {arg3::%arg 3%}
+						set {rank::%arg 1%::text} to {arg2::%arg 2%}
+						set {name::%arg 1%::text} to {arg3::%arg 3%}
+						send "%{ranks::text::title}% Je hebt &b%{arg3::%arg 3%}% &3de rank &b%{arg2::%arg 2%}% &3gegeven."
+						send "%{ranks::text::title}% Je hebt de rank: &b%{arg2::%arg 2%}% &3gekregen." to arg 1
+						stop
+					else:
+						send "%{ranks::text::title}% &4Je moet nog een &cprefix &4opgeven."
+				else:
+					send "%{ranks::text::title}% &4Je moet nog een &crank en prefix &4opgeven."
+					stop
+			else:
+				send "%{ranks::text::title}% &4Je moet nog een &cspeler, rank &4en een &cprefix &4opgeven."
+				stop
+		else:
+			send "%{ranks::text::title}% &4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+
+
+on chat:
+	if player is in world "lobby":
+		cancel event
+		send "%{rank::%player%::text}% %{name::%player%::text}% %message%" to all players in world "lobby"
+		stop
+	if player is in world "Survival":
+		cancel event
+		send "%{rank::%player%::text}% %{name::%player%::text}% %message%" to all players in world "Survival"
+		stop
+	if player is in world "Kingdom":
+		cancel event
+		send "%{rank::%player%::text}% %{name::%player%::text}% %message%" to all players in world "Kingdom"
+		stop
+	if player is in world "Creative":
+		cancel event
+		send "%{rank::%player%::text}% %{name::%player%::text}% %message%" to all players in world "Creative"
+		stop
+	if player is in world "Skywars":
+		cancel event
+		send "%{rank::%player%::text}% %{name::%player%::text}% %message%" to all players in world "Skywars"
+		stop
+	if player is in world "Colosseum-w1":
+		cancel event
+		send "%{rank::%player%::text}% %{name::%player%::text}% %message%" to all players in world "Colosseum-w1"
+		stop
+
+every 1 tick:
+	loop all players in world "lobby":
+
+		set tab header to "&8[&f&lTutorial&8]" and footer to " " for loop-player
+
+		set loop-player tab name to "%{rank::%loop-player%::text}% %loop-player%"

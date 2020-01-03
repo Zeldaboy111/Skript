@@ -1,0 +1,63 @@
+options:
+	{quest::%attacker%::zombieskilled} = {quest::%{_p}%::zombieskilled}
+	{quest::%player%::dirtmined} = {quest::%{_p}%::dirtmined}
+
+function scoreboard(p: player):
+	
+	wipe {_p}'s sidebar
+
+	set name of sidebar of {_p} to "&3Quests"
+	set score "&bZombies:" in sidebar of {_p} to 10
+
+	if {quest::%{_p}%::zombieskilled} is not set:
+		set score "&90/10 Zombies" in sidebar of {_p} to 9
+		
+	else:
+		if {quest::%{_p}%::zombieskilled} is more than 9:
+			set score "&910/10 Zombies" in sidebar of {_p} to 9
+
+		else:
+			set score "&9%{quest::%{_p}%::zombieskilled}%/10 Zombies" in sidebar of {_p} to 9
+
+	set score "" in sidebar of {_p} to 8
+	set score "&bDirt" in sidebar of {_p} to 7
+
+	if {quest::%{_p}%::dirtmined} is not set:
+		set score "&90/10 Dirt" in sidebar of {_p} to 6
+
+	else:
+		if {quest::%{_p}%::dirtmined} is more than 9:
+			set score "&910/10 Dirt" in sidebar of {_p} to 6
+
+		else:
+			set score "&9%{quest::%{_p}%::dirtmined}%/10 Dirt" in sidebar of {_p} to 6
+
+
+
+on death:
+	victim is a zombie:
+		if {quest::%attacker%::zombieskilled} is 9:
+			add 1 to {quest::%attacker%::zombieskilled}
+			drop 1 diamond at victim
+
+		if {quest::%attacker%::zombieskilled} is less than 9:
+			add 1 to {quest::%attacker%::zombieskilled}
+
+		if {quest::%attacker%::zombieskilled} is not set:
+			add 1 to {quest::%attacker%::zombieskilled}
+
+on mine of dirt:
+	if {quest::%player%::dirtmined} is 9:
+		add 1 to {quest::%player%::dirtmined}
+		drop 1 diamond at block
+
+	if {quest::%player%::dirtmined} is less than 9:
+		add 1 to {quest::%player%::dirtmined}
+
+	if {quest::%player%::dirtmined} is not set:
+		add 1 to {quest::%player%::dirtmined}
+
+
+every 1 tick:
+	loop all players in world "CraftWars":
+		scoreboard(loop-player)

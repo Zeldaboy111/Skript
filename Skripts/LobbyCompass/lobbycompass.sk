@@ -1,0 +1,272 @@
+options:
+	{inventory::%arg 1%} = {inventory::%player%}
+	{inventory.lobby.%player%::*} = {inventory.lobby.%arg 1%::*}
+	{inventory.survival.%player%::*} = {inventory.survival.%arg 1%::*}
+	{inventory.kingdom.%player%::*} = {inventory.kingdom.%arg 1%::*}
+
+
+on load:
+	set {LobbyCompassName} to "&3LobbyCompass"
+	set {LobbyCompassLore} to "&kl"
+	set {TitleMessage} to "&c<&4Lobby&c>"
+
+on join:
+	execute console command "/clobby %player% lobby"
+	wait 1 tick
+	
+	
+
+	player is in world "lobby":
+		set hunger to 10
+		set player's health to 10
+
+		#clear the player's inventory
+		
+		#set slot 4 of player to a chest named "&6Cosmetics" with lore "&7Open een cosmetic GUI"
+		#set slot 0 of player to a compass named "%{LobbyCompassName}%" with lore "%{LobbyCompassLore}%"
+		#wait 1 tick
+		#set {inventory.%world%.%player%::*} to items in the player's inventory
+
+
+command /setlobby [<text>]:
+	trigger:
+		if player has permission "lobby.set" OR "lobby.*":
+			if arg 1 is "lobby":
+				set {LobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4lobby spawn &cgezet op:%nl% &4%{LobbyLocation}%"
+				stop
+			if arg 1 is "survival":
+				set {SurvivalLobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4survival spawn &cgezet op:%nl% &4%{SurvivalLobbyLocation}%"
+				stop
+			if arg 1 is "kingdom":
+				set {KingdomLobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4kingdom spawn &cgezet op:%nl% &4%{KingdomLobbyLocation}%"
+				stop
+			if arg 1 is "creative":
+				set {CreativeLobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4creative spawn &cgezet op:%nl% &4%{CreativeLobbyLocation}%"
+				stop
+			if arg 1 is "skywars":
+				set {SkywarsLobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4skywars spawn &cgezet op:%nl% &4%{SkywarsLobbyLocation}%"
+				stop
+			if arg 1 is "colosseum":
+				set {ColosseumLobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4colosseum spawn &cgezet op:%nl% &4%{ColosseumLobbyLocation}%"
+				stop
+			if arg 1 is "tikkertje":
+				set {TikkertjeLobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4tikkertje spawn &cgezet op:%nl% &4%{TikkertjeLobbyLocation}%"
+				stop
+
+			if arg 1 is "craftwars":
+				set {CraftWarsLobbyLocation} to location of player
+				send "%{TitleMessage}% Je hebt de locatie van de &4CraftWars spawn &cgezet op:%nl% &4%{CraftWarsLobbyLocation}%"
+				stop
+
+			if arg 1 is "MineNation":
+				json("%player%", "%{TitleMessage}% Je moet het volgende command gebruiken: ||&c&l/mn setlobby||ttp:&1Zet de lobby van MineNation||cmd:/mn setlobby")
+				stop
+
+
+			else:
+				if arg 1 is not set:
+					send "%{TitleMessage}% Je moet nog een lobbynaam invoeren."
+					stop
+				else:
+					send "%{TitleMessage}% Deze lobby kan niet gezet worden."
+
+		else:
+			send "%{TitleMessage}% Je hebt geen permissies om deze command uit te voeren."
+			stop
+
+
+command /clobby [<offline player>] [<text>]:
+	executable by: console
+	trigger:
+		if arg 1 is set:
+			if arg 2 is "lobby":
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				wait 1 tick
+				#clear inventory of arg 1
+				wait 1 tick
+				teleport arg 1 to {LobbyLocation}
+				set slot 4 of arg 1 to a chest named "&6Cosmetics" with lore "&7Open een cosmetic GUI"
+				set slot 0 of arg 1 to a compass named "&3LobbyCompass" with lore "&kl"
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				#set arg 1's inventory to {inventory.%world%.%player%::*}
+				send "&d<&5Lobby&d> Welkom in de lobby!" to arg 1
+				stop
+			if arg 2 is "survival":
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				wait 1 tick
+				#clear inventory of arg 1
+				wait 1 tick
+				teleport arg 1 to {SurvivalLobbyLocation}
+				wait 1 tick
+				#set arg 1's inventory to {inventory.survival.%arg 1%::*}
+				send "&d<&5Survival&d> Welkom op de Survival Server!" to arg 1
+				stop
+			if arg 2 is "kingdom":
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				wait 1 tick
+				#clear inventory of arg 1
+				wait 1 tick
+				teleport arg 1 to {KingdomLobbyLocation}
+				#set arg 1's inventory to {inventory.kingdom.%arg 1%::*}
+				send "&d<&5Kingdom&d> Welkom op de Kingdom server!" to arg 1
+				
+				stop
+			if arg 2 is "creative":
+				wait 1 tick
+				#clear inventory of arg 1
+				teleport arg 1 to {CreativeLobbyLocation}
+				send "&d<&5Creative&d> Welkom op de Creative server!" to arg 1
+				stop
+
+			if arg 2 is "skywars":
+				wait 1 tick
+				#clear inventory of arg 1
+				teleport arg 1 to {SkywarsLobbyLocation}
+				send "&6<&eSkywars&6> &eWelkom op de Skywars server!"
+				stop
+			if arg 2 is "colosseum":
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				wait 1 tick
+				#clear inventory of arg 1
+				wait 1 tick
+				teleport arg 1 to {ColosseumLobbyLocation}
+				send "&d<&5Colosseum&d> Welkom in het Colosseum!" to arg 1
+				stop
+			if arg 2 is "tikkertje":
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				wait 1 tick
+				#clear inventory of arg 1
+				wait 1 tick
+				teleport arg 1 to {TikkertjeLobbyLocation}
+				send "&d<&5Tikkertje&d> Welkom in Tikkertje!" to arg 1
+				stop
+			if arg 2 is "MineNation":
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				wait 1 tick
+				#clear inventory of arg 1
+				wait 1 tick
+				teleport arg 1 to {mn::lobby}
+				send "&d<&5MineNation&d> Welkom in MineNation!" to arg 1
+				stop
+
+			if arg 2 is "CraftWars":
+				#set {inventory.lobby.%arg 1%::*} to items in arg 1's inventory
+				wait 1 tick
+				#clear inventory of arg 1
+				wait 1 tick
+				teleport arg 1 to {CraftWarsLobbyLocation}
+				send "&d<&5CraftWars&d> Welkom in CraftWars!" to arg 1
+				stop
+
+	
+command /lobby:
+	trigger:
+		if player is in world "survival":
+		#	set {inventory.surival.%player%::*} to items in player's inventory 
+		if player is in world "kingdom":
+		#	set {inventory.kingdom.%player%::*} to items in player's inventory 
+		if player is in world "lobby":
+		#	set {inventory.lobby.%player%::*} to items in player's inventory
+		if player is in world "Colosseum-w1":
+		#	set {inventory.colosseum.%player%::*} to items in player's inventory 
+
+		teleport player to {LobbyLocation}
+		#clear player's inventory
+		wait 1 tick
+		#set player's inventory to {inventory.lobby.%player%::*}
+		send "&d<&5Lobby&d> &5Welkom in de lobby!"
+		stop
+
+command /alobby [<text>] [<offline player>]:
+	trigger:
+		if arg 2 is set:
+			if arg 1 is "lobby":
+				teleport arg 2 to {LobbyLocation}
+				stop
+			if arg 1 is "survival":
+				teleport arg 2 to {SurvivalLobbyLocation}
+				send "&d<&5Survival&d> Welkom op de Survival server!"
+				stop
+			if arg 1 is "kingdom":
+				teleport arg 2 to {KingdomLobbyLocation}
+				send "&d<&5Kingdom&d> Welkom op de Kingdom server!"
+				stop
+			if arg 1 is "creative":
+				teleport arg 2 to {CreativeLobbyLocation}
+				send "&d<&5Creative&d> Welkom op de Creative server!"
+				stop
+			if arg 1 is "colosseum":
+				teleport arg 2 to {ColosseumLobbyLocation}
+				send "&d<&5Colosseum&d> Welkom in het Colosseum!"
+				stop
+			if arg 1 is "tikkertje":
+				teleport arg 2 to {TikkertjeLobbyLocation}
+				send "&d<&5Tikkertje&d> Welkom bij tikkertje!"
+				stop
+			if arg 1 is "MineNation":
+				teleport arg 2 to {mn::lobby}
+				send "&d<&5MineNation&d> Welkom bij MineNation!"
+				stop
+
+			if arg 1 is "MineNation":
+				teleport arg 2 to {CraftWarsLobbyLocation}
+				send "&d<&5CraftWars&d> Welkom bij CraftWars!"
+				stop
+
+		else:
+			if arg 1 is "lobby":
+				teleport player to {LobbyLocation}
+				stop
+			if arg 1 is "survival":
+				teleport player to {SurvivalLobbyLocation}
+				send "&d<&5Survival&d> Welkom op de Survival server!"
+				stop
+			if arg 1 is "kingdom":
+				teleport player to {KingdomLobbyLocation}
+				send "&d<&5Kingdom&d> Welkom op de Kingdom server!"
+				stop
+			if arg 1 is "creative":
+				teleport player to {CreativeLobbyLocation}
+				send "&d<&5Creative&d> Welkom op de Creative server!"
+				stop
+			if arg 1 is "skywars":
+				teleport player to {SkywarsLobbyLocation}
+				send "&d<&5Creative&d> Welkom op de Skywars server!"
+				stop
+			if arg 1 is "colosseum":
+				teleport arg 2 to {ColosseumLobbyLocation}
+				send "&d<&5Colosseum&d> Welkom in het Colosseum!"
+				stop
+			if arg 1 is "tikkertje":
+				teleport player to {TikkertjeLobbyLocation}
+				send "&d<&5Tikkertje&d> Welkom bij tikkertje!"
+				stop
+			if arg 1 is "MineNation":
+				teleport player to {mn::lobby}
+				send "&d<&5Tikkertje&d> Welkom bij MineNation!"
+				stop
+
+
+			else:
+				send "%{TitleMessage}% Je moet nog een server invoeren."
+				stop
+
+on rightclick:
+	if player is in world "lobby":
+		if player is holding a compass named {LobbyCompassName} with lore {LobbyCompassLore}:
+			open chest with 3 rows named "&3LobbyCompass" to player
+			format slot 0 of player with a grass block named "&5Survival" with lore "&7Survival, alleen of met vrienden!" to close then run [execute console command "/clobby %player% survival"]
+			format slot 2 of player with a diamond sword named "&5Kingdom" with lore "&7Kingdom, welk kingdom wordt het sterkst?" to close then run [execute console command "/clobby %player% kingdom"]
+			format slot 4 of player with a diamond block named "&5Creative" with lore "&7Creative, bouw maar los op je plot!" to close then run [execute console command "/clobby %player% creative"]
+			format slot 6 of player with a feather named "&5Skywars" with lore "&7Skywars" to close then run [execute console command "/clobby %player% skywars"]
+			format slot 8 of player with a golden apple named "&5Colosseum" with lore "&7Hoe sterk ben jij?" to close then run [execute console command "/clobby %player% colosseum"]
+			format slot 9 of player with a name tag named "&5Tikkertje" with lore "&7Tikkie, jij bent hem!" to close then run [execute console command "/clobby %player% tikkertje"]
+			format slot 11 of player with a wooden pickaxe named "&5MineNation" with lore "&7MineNation is nog in aanbouw" to close then run [execute console command "/clobby %player% MineNation"]
+			format slot 13 of player with a crafting table named "&6CraftWars" with lore "&7CraftWars, bouw je eigen fabriek!" to close then run [execute console command "/clobby %player% CraftWars"]

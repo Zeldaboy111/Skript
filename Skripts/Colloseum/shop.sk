@@ -1,0 +1,19 @@
+command /setshop:
+	trigger:
+		if player has permission "shop.*" OR "shop.set":
+			set {shop::%world%} to location of player
+			send "&e<&6Shop&e> &6Je hebt de &eshop &6van de wereld &e%world%     &6gezet op: &e%location of player%&6."
+			stop
+		else:
+			send "&e<&6Shop&e> &4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+			stop
+
+command /shop:
+	trigger:
+		if {shop::%world%} is set:
+			teleport the player to {shop::%world%}
+			send "&e<&6Shop&e> &6Welkom in de shop."
+			stop
+		else:
+			send "&e<&6Shop&e> &6Er is nog geen shop in deze wereld."
+			stop

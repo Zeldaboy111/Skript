@@ -1,0 +1,489 @@
+options:
+	LlamaSoup: beetroot soup named "&cLlama soup"
+
+on enable:
+	set {cw::title} to "&8[&eCraftWars&8]&7" #Default: "&8[&eCraftWars&8]&7"
+
+
+command /craftwars [<text>] [<text>] [<text>]:
+	aliases: cw
+	trigger:
+		if player has permission "craftwars.*":
+			if arg 1 is "help":
+				if arg 2 is not set:
+					execute player command "/cw help 1"
+					stop
+
+				if arg 2 is "1":
+					send "&8________[&eCraftWars&8]________"
+					json("%player%", "&8/craftwars help||ttp:&9Krijg de help pagina||cmd:/cw help")
+					json("%player%", "&8/craftwars shop||ttp:&9Ga naar de shop||cmd:/cw shop")
+					send "&8________[&ePag:  1/1&8]________"
+					stop
+
+			if arg 1 is "shop":
+				openShop(player, "engineer", "main")
+				stop
+
+
+			else:
+				send "%{cw::title}% Dit is geen geldig argument, doe /craftwars help."
+				stop
+		#else
+
+
+
+#Machine:
+
+on rightclick:
+	if player is holding a book named "&3Dirt Machine" with lore "&8Plaats deze om een dirt machine te maken.":
+						
+		set {_world} to world of player
+		if player's facing is south:
+			#Belt
+
+			set {_fblock.x1} to targeted block of player's x-coordinate
+			set {_fblock.y1} to targeted block of player's y-coordinate+1
+			set {_fblock.z1} to targeted block of player's z-coordinate
+
+			set {_fblock.x2} to targeted block of player's x-coordinate
+			set {_fblock.y2} to targeted block of player's y-coordinate+1
+			set {_fblock.z2} to targeted block of player's z-coordinate+1
+
+			set {_fblock.x3} to targeted block of player's x-coordinate
+			set {_fblock.y3} to targeted block of player's y-coordinate+1
+			set {_fblock.z3} to targeted block of player's z-coordinate+2
+
+			set {_fblock.x4} to targeted block of player's x-coordinate
+			set {_fblock.y4} to targeted block of player's y-coordinate+1
+			set {_fblock.z4} to targeted block of player's z-coordinate+3
+
+			set {_fblock.x5} to targeted block of player's x-coordinate
+			set {_fblock.y5} to targeted block of player's y-coordinate+1
+			set {_fblock.z5} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x6} to targeted block of player's x-coordinate
+			set {_fblock.y6} to targeted block of player's y-coordinate+1
+			set {_fblock.z6} to targeted block of player's z-coordinate+5
+
+			set {_fblock.x7} to targeted block of player's x-coordinate
+			set {_fblock.y7} to targeted block of player's y-coordinate+1
+			set {_fblock.z7} to targeted block of player's z-coordinate+6
+
+
+			#Walls
+			set {_fblock.x8} to targeted block of player's x-coordinate+1
+			set {_fblock.y8} to targeted block of player's y-coordinate+1
+			set {_fblock.z8} to targeted block of player's z-coordinate
+
+			set {_fblock.x9} to targeted block of player's x-coordinate-1
+			set {_fblock.y9} to targeted block of player's y-coordinate+1
+			set {_fblock.z9} to targeted block of player's z-coordinate
+
+			set {_fblock.x10} to targeted block of player's x-coordinate+1
+			set {_fblock.y10} to targeted block of player's y-coordinate+1
+			set {_fblock.z10} to targeted block of player's z-coordinate+1
+
+			set {_fblock.x11} to targeted block of player's x-coordinate+1
+			set {_fblock.y11} to targeted block of player's y-coordinate+1
+			set {_fblock.z11} to targeted block of player's z-coordinate+2
+
+			set {_fblock.x12} to targeted block of player's x-coordinate+1
+			set {_fblock.y12} to targeted block of player's y-coordinate+1
+			set {_fblock.z12} to targeted block of player's z-coordinate+3
+
+			set {_fblock.x13} to targeted block of player's x-coordinate+1
+			set {_fblock.y13} to targeted block of player's y-coordinate+1
+			set {_fblock.z13} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x14} to targeted block of player's x-coordinate+1
+			set {_fblock.y14} to targeted block of player's y-coordinate+1
+			set {_fblock.z14} to targeted block of player's z-coordinate+5
+
+			set {_fblock.x15} to targeted block of player's x-coordinate+1
+			set {_fblock.y15} to targeted block of player's y-coordinate+1
+			set {_fblock.z15} to targeted block of player's z-coordinate+6
+
+			set {_fblock.x16} to targeted block of player's x-coordinate-1
+			set {_fblock.y16} to targeted block of player's y-coordinate+1
+			set {_fblock.z16} to targeted block of player's z-coordinate
+
+			set {_fblock.x17} to targeted block of player's x-coordinate+1
+			set {_fblock.y17} to targeted block of player's y-coordinate+1
+			set {_fblock.z17} to targeted block of player's z-coordinate
+
+			set {_fblock.x18} to targeted block of player's x-coordinate-1
+			set {_fblock.y18} to targeted block of player's y-coordinate+1
+			set {_fblock.z18} to targeted block of player's z-coordinate
+
+			set {_fblock.x19} to targeted block of player's x-coordinate-1
+			set {_fblock.y19} to targeted block of player's y-coordinate+1
+			set {_fblock.z19} to targeted block of player's z-coordinate+1
+
+			set {_fblock.x20} to targeted block of player's x-coordinate-1
+			set {_fblock.y20} to targeted block of player's y-coordinate+1
+			set {_fblock.z20} to targeted block of player's z-coordinate+2
+
+			set {_fblock.x21} to targeted block of player's x-coordinate-1
+			set {_fblock.y21} to targeted block of player's y-coordinate+1
+			set {_fblock.z21} to targeted block of player's z-coordinate+3
+
+			set {_fblock.x22} to targeted block of player's x-coordinate-1
+			set {_fblock.y22} to targeted block of player's y-coordinate+1
+			set {_fblock.z22} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x23} to targeted block of player's x-coordinate-1
+			set {_fblock.y23} to targeted block of player's y-coordinate+1
+			set {_fblock.z23} to targeted block of player's z-coordinate+5
+
+			set {_fblock.x24} to targeted block of player's x-coordinate-1
+			set {_fblock.y24} to targeted block of player's y-coordinate+1
+			set {_fblock.z24} to targeted block of player's z-coordinate+6
+
+			set {_fblock.x25} to targeted block of player's x-coordinate+1
+			set {_fblock.y25} to targeted block of player's y-coordinate+2
+			set {_fblock.z25} to targeted block of player's z-coordinate
+
+			set {_fblock.x26} to targeted block of player's x-coordinate+1
+			set {_fblock.y26} to targeted block of player's y-coordinate+2
+			set {_fblock.z26} to targeted block of player's z-coordinate+1
+
+			set {_fblock.x27} to targeted block of player's x-coordinate+1
+			set {_fblock.y27} to targeted block of player's y-coordinate+2
+			set {_fblock.z27} to targeted block of player's z-coordinate+2
+
+			set {_fblock.x28} to targeted block of player's x-coordinate+1
+			set {_fblock.y28} to targeted block of player's y-coordinate+2
+			set {_fblock.z28} to targeted block of player's z-coordinate+3
+
+			set {_fblock.x29} to targeted block of player's x-coordinate+1
+			set {_fblock.y29} to targeted block of player's y-coordinate+2
+			set {_fblock.z29} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x30} to targeted block of player's x-coordinate+1
+			set {_fblock.y30} to targeted block of player's y-coordinate+2
+			set {_fblock.z30} to targeted block of player's z-coordinate+5
+
+			set {_fblock.x31} to targeted block of player's x-coordinate+1
+			set {_fblock.y31} to targeted block of player's y-coordinate+2
+			set {_fblock.z31} to targeted block of player's z-coordinate+6
+
+			set {_fblock.x32} to targeted block of player's x-coordinate-1
+			set {_fblock.y32} to targeted block of player's y-coordinate+2
+			set {_fblock.z32} to targeted block of player's z-coordinate
+
+			set {_fblock.x33} to targeted block of player's x-coordinate-1
+			set {_fblock.y33} to targeted block of player's y-coordinate+2
+			set {_fblock.z33} to targeted block of player's z-coordinate+1
+
+			set {_fblock.x34} to targeted block of player's x-coordinate-1
+			set {_fblock.y34} to targeted block of player's y-coordinate+2
+			set {_fblock.z34} to targeted block of player's z-coordinate+2
+
+			set {_fblock.x35} to targeted block of player's x-coordinate-1
+			set {_fblock.y35} to targeted block of player's y-coordinate+2
+			set {_fblock.z35} to targeted block of player's z-coordinate+3
+
+			set {_fblock.x36} to targeted block of player's x-coordinate-1
+			set {_fblock.y36} to targeted block of player's y-coordinate+2
+			set {_fblock.z36} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x37} to targeted block of player's x-coordinate-1
+			set {_fblock.y37} to targeted block of player's y-coordinate+2
+			set {_fblock.z37} to targeted block of player's z-coordinate+5
+
+			set {_fblock.x38} to targeted block of player's x-coordinate-1
+			set {_fblock.y38} to targeted block of player's y-coordinate+2
+			set {_fblock.z38} to targeted block of player's z-coordinate+6
+
+			#Glass
+			set {_fblock.x39} to targeted block of player's x-coordinate
+			set {_fblock.y39} to targeted block of player's y-coordinate+2
+			set {_fblock.z39} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x40} to targeted block of player's x-coordinate
+			set {_fblock.y40} to targeted block of player's y-coordinate+2
+			set {_fblock.z40} to targeted block of player's z-coordinate+2
+
+			#Roof
+
+			set {_fblock.x41} to targeted block of player's x-coordinate
+			set {_fblock.y41} to targeted block of player's y-coordinate+3
+			set {_fblock.z41} to targeted block of player's z-coordinate+2
+
+			set {_fblock.x42} to targeted block of player's x-coordinate+1
+			set {_fblock.y42} to targeted block of player's y-coordinate+3
+			set {_fblock.z42} to targeted block of player's z-coordinate+3
+
+			set {_fblock.x43} to targeted block of player's x-coordinate
+			set {_fblock.y43} to targeted block of player's y-coordinate+3
+			set {_fblock.z43} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x44} to targeted block of player's x-coordinate-1
+			set {_fblock.y44} to targeted block of player's y-coordinate+3
+			set {_fblock.z44} to targeted block of player's z-coordinate+3
+
+			set {_fblock.x45} to targeted block of player's x-coordinate
+			set {_fblock.y45} to targeted block of player's y-coordinate+3
+			set {_fblock.z45} to targeted block of player's z-coordinate+3
+
+			#Pipe
+
+			set {_pipe.dir} to a random integer between 1 and 4
+			
+			if {_pipe.dir} is 1:
+				set {_fblock.x46} to targeted block of player's x-coordinate
+				set {_fblock.y46} to targeted block of player's y-coordinate+4
+				set {_fblock.z46} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x47} to targeted block of player's x-coordinate
+				set {_fblock.y47} to targeted block of player's y-coordinate+5
+				set {_fblock.z47} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x48} to targeted block of player's x-coordinate-1
+				set {_fblock.y48} to targeted block of player's y-coordinate+5
+				set {_fblock.z48} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x49} to targeted block of player's x-coordinate-1
+				set {_fblock.y49} to targeted block of player's y-coordinate+6
+				set {_fblock.z49} to targeted block of player's z-coordinate+3
+
+
+
+			if {_pipe.dir} is 2:
+				set {_fblock.x46} to targeted block of player's x-coordinate
+				set {_fblock.y46} to targeted block of player's y-coordinate+4
+				set {_fblock.z46} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x47} to targeted block of player's x-coordinate
+				set {_fblock.y47} to targeted block of player's y-coordinate+5
+				set {_fblock.z47} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x48} to targeted block of player's x-coordinate
+				set {_fblock.y48} to targeted block of player's y-coordinate+5
+				set {_fblock.z48} to targeted block of player's z-coordinate+2
+
+				set {_fblock.x49} to targeted block of player's x-coordinate
+				set {_fblock.y49} to targeted block of player's y-coordinate+6
+				set {_fblock.z49} to targeted block of player's z-coordinate+2
+
+
+			if {_pipe.dir} is 3:
+				set {_fblock.x46} to targeted block of player's x-coordinate
+				set {_fblock.y46} to targeted block of player's y-coordinate+4
+				set {_fblock.z46} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x47} to targeted block of player's x-coordinate
+				set {_fblock.y47} to targeted block of player's y-coordinate+5
+				set {_fblock.z47} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x48} to targeted block of player's x-coordinate+1
+				set {_fblock.y48} to targeted block of player's y-coordinate+5
+				set {_fblock.z48} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x49} to targeted block of player's x-coordinate+1
+				set {_fblock.y49} to targeted block of player's y-coordinate+6
+				set {_fblock.z49} to targeted block of player's z-coordinate+3
+
+
+			if {_pipe.dir} is 4:
+				set {_fblock.x46} to targeted block of player's x-coordinate
+				set {_fblock.y46} to targeted block of player's y-coordinate+4
+				set {_fblock.z46} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x47} to targeted block of player's x-coordinate
+				set {_fblock.y47} to targeted block of player's y-coordinate+5
+				set {_fblock.z47} to targeted block of player's z-coordinate+3
+
+				set {_fblock.x48} to targeted block of player's x-coordinate
+				set {_fblock.y48} to targeted block of player's y-coordinate+5
+				set {_fblock.z48} to targeted block of player's z-coordinate+4
+
+				set {_fblock.x49} to targeted block of player's x-coordinate
+				set {_fblock.y49} to targeted block of player's y-coordinate+1
+				set {_fblock.z49} to targeted block of player's z-coordinate+4
+
+			set {_fblock.x50} to targeted block of player's x-coordinate
+			set {_fblock.y50} to targeted block of player's y-coordinate+2
+			set {_fblock.z50} to targeted block of player's z-coordinate+3
+
+
+
+
+
+		#stone bricks:3 = chiseled stone bricks
+
+		#Belt
+		set block at location {_fblock.x1}, {_fblock.y1}, {_fblock.z1} in world {_world} to polished andesite
+		wait 0.7 second
+		set block at location {_fblock.x2}, {_fblock.y2}, {_fblock.z2} in world {_world} to polished andesite
+		wait 0.7 second
+		set block at location {_fblock.x3}, {_fblock.y3}, {_fblock.z3} in world {_world} to polished andesite
+		wait 0.7 second
+		set block at location {_fblock.x4}, {_fblock.y4}, {_fblock.z4} in world {_world} to polished andesite
+		wait 0.7 second
+		set block at location {_fblock.x5}, {_fblock.y5}, {_fblock.z5} in world {_world} to polished andesite
+		wait 0.7 second
+		set block at location {_fblock.x6}, {_fblock.y6}, {_fblock.z6} in world {_world} to polished andesite
+		wait 0.7 second
+		set block at location {_fblock.x7}, {_fblock.y7}, {_fblock.z7} in world {_world} to polished andesite
+		wait 0.7 second
+
+		#Walls - Left
+		set block at location {_fblock.x8}, {_fblock.y8}, {_fblock.z8} in world {_world} to stone bricks:3
+		wait 0.7 second
+
+		set block at location {_fblock.x10}, {_fblock.y10}, {_fblock.z10} in world {_world} to stone bricks
+		wait 0.7 second
+		set block at location {_fblock.x11}, {_fblock.y11}, {_fblock.z11} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x12}, {_fblock.y12}, {_fblock.z12} in world {_world} to stone bricks:3
+		wait 0.7 second
+
+		set block at location {_fblock.x13}, {_fblock.y13}, {_fblock.z13} in world {_world} to stone bricks
+		wait 0.7 second
+		set block at location {_fblock.x14}, {_fblock.y14}, {_fblock.z14} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x15}, {_fblock.y15}, {_fblock.z15} in world {_world} to stone bricks:3
+		wait 0.7 second
+		set block at location {_fblock.x16}, {_fblock.y16}, {_fblock.z16} in world {_world} to stone bricks:3
+		wait 0.7 second
+
+		#Walls - Right
+		set block at location {_fblock.x17}, {_fblock.y17}, {_fblock.z17} in world {_world} to stone bricks:3
+		wait 0.7 second
+
+		set block at location {_fblock.x19}, {_fblock.y19}, {_fblock.z19} in world {_world} to stone bricks
+		wait 0.7 second
+		set block at location {_fblock.x20}, {_fblock.y20}, {_fblock.z20} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x21}, {_fblock.y21}, {_fblock.z21} in world {_world} to stone bricks:3
+		wait 0.7 second
+
+		set block at location {_fblock.x22}, {_fblock.y22}, {_fblock.z22} in world {_world} to stone bricks
+		wait 0.7 second
+		set block at location {_fblock.x23}, {_fblock.y23}, {_fblock.z23} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x24}, {_fblock.y24}, {_fblock.z24} in world {_world} to stone bricks:3
+		wait 0.7 second
+		
+		#Slabs
+		set block at location {_fblock.x25}, {_fblock.y25}, {_fblock.z25} in world {_world} to cobblestone slab
+		wait 0.7 second
+		set block at location {_fblock.x26}, {_fblock.y26}, {_fblock.z26} in world {_world} to cobblestone slab
+		wait 0.7 second
+
+		set block at location {_fblock.x27}, {_fblock.y27}, {_fblock.z27} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x28}, {_fblock.y28}, {_fblock.z28} in world {_world} to stone bricks:3
+		wait 0.7 second
+
+		set block at location {_fblock.x29}, {_fblock.y29}, {_fblock.z29} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x30}, {_fblock.y30}, {_fblock.z30} in world {_world} to cobblestone slab
+		wait 0.7 second
+		set block at location {_fblock.x31}, {_fblock.y31}, {_fblock.z31} in world {_world} to cobblestone slab
+		wait 0.7 second
+
+		set block at location {_fblock.x32}, {_fblock.y32}, {_fblock.z32} in world {_world} to cobblestone slab
+		wait 0.7 second
+		set block at location {_fblock.x33}, {_fblock.y33}, {_fblock.z33} in world {_world} to cobblestone slab
+		wait 0.7 second
+
+		set block at location {_fblock.x34}, {_fblock.y34}, {_fblock.z34} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x35}, {_fblock.y35}, {_fblock.z35} in world {_world} to stone bricks:3
+		wait 0.7 second
+		
+		set block at location {_fblock.x36}, {_fblock.y36}, {_fblock.z36} in world {_world} to stone bricks
+		wait 0.7 second
+
+		set block at location {_fblock.x37}, {_fblock.y37}, {_fblock.z37} in world {_world} to cobblestone slab
+		wait 0.7 second
+		set block at location {_fblock.x38}, {_fblock.y38}, {_fblock.z38} in world {_world} to cobblestone slab
+		wait 0.7 second
+
+		#Glass
+		set block at location {_fblock.x39}, {_fblock.y39}, {_fblock.z39} in world {_world} to green glass block
+		wait 0.7 second
+		set block at location {_fblock.x40}, {_fblock.y40}, {_fblock.z40} in world {_world} to green glass block
+		wait 0.7 second
+
+		#Roof
+		set block at location {_fblock.x41}, {_fblock.y41}, {_fblock.z41} in world {_world} to stone bricks slab
+		wait 0.7 second
+		set block at location {_fblock.x42}, {_fblock.y42}, {_fblock.z42} in world {_world} to stone bricks slab
+		wait 0.7 second
+		set block at location {_fblock.x43}, {_fblock.y43}, {_fblock.z43} in world {_world} to stone bricks slab
+		wait 0.7 second
+		set block at location {_fblock.x44}, {_fblock.y44}, {_fblock.z44} in world {_world} to stone bricks slab
+		wait 0.7 second
+
+		set block at location {_fblock.x45}, {_fblock.y45}, {_fblock.z45} in world {_world} to stone bricks:3
+		wait 0.7 second
+
+		#Pipe
+		set block at location {_fblock.x46}, {_fblock.y46}, {_fblock.z46} in world {_world} to cobblestone wall
+		wait 0.7 second
+		set block at location {_fblock.x47}, {_fblock.y47}, {_fblock.z47} in world {_world} to cobblestone wall
+		wait 0.7 second
+		set block at location {_fblock.x48}, {_fblock.y48}, {_fblock.z48} in world {_world} to cobblestone wall
+		wait 0.7 second
+		set block at location {_fblock.x49}, {_fblock.y49}, {_fblock.z49} in world {_world} to cobblestone wall
+		wait 0.7 second
+		
+		#Dirt
+		set block at location {_fblock.x50}, {_fblock.y50}, {_fblock.z50} in world {_world} to dirt
+		send "&2Done!"
+
+		
+
+
+		stop
+
+on enable:
+	set {_LlamaLeather} to leather named "&cLlama leather"
+	set {_LlamaFlesh} to raw mutton named "&cLlama flesh"
+	
+
+
+	register new shaped recipe for a leather chestplate of unbreaking 10 named "&7Llama chestplate" using {_LlamaLeather}, iron_nugget, {_LlamaLeather}, {_LlamaLeather}, {_LlamaLeather}, {_LlamaLeather}, {_LlamaLeather}, {_LlamaLeather}, {_LlamaLeather}
+	register new shapeless recipe for beetroot soup named "&cLlama soup" using {_LlamaFlesh}, bowl, air, air, air, air, air, air, air
+
+
+on consume:
+	player is holding {@LlamaSoup}:
+		apply strength 1 to the player for 10 seconds
+
+
+	
+
+on death of a ocelot:
+	chance of 1%:
+		drop 5 fish at victim
+
+	chance of 6%:
+		drop 3 fish at victim
+
+	chance of 70%:
+		drop 1 fish at victim
+
+on death of a llama:
+	chance of 1%:
+		drop 3 raw mutton named "&cLlama flesh" with lore "&7Effects: hunger and slowness" at victim
+
+	chance of 7%:
+		drop 4 leather named "&cLlama leather" at victim
+
+	chance of 23%:
+		drop 2 leather named "&cLlama leather" at victim
+
+	chance of 70%:
+		drop 1 raw mutton named "&cLlama flesh" with lore "&7Effects: hunger and slowness" at victim

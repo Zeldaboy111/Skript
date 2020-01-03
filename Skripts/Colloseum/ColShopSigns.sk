@@ -1,0 +1,136 @@
+
+
+on load:
+	set {colshopsigns::title} to "&1[&e&k::&6ColShopSigns&e&k::&1] &6"
+	set {colshopsigns::help::title} to "&1[&e&k::&6CSS&e&k::&1]"
+	set {colshopsigns::text::nep} to "&4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+	set {colshopsigns::text::help} to "Doe &e/colshopsigns help &6voor meer informatie."
+
+command /colshopsigns [<text>] [<text>] [<text>] [<number>] [<text>] [<number>]:
+	aliases: /css
+	trigger:
+		if player has permission "colshopsigns.use" OR "colshopsigns.*":
+			if player is in world "Colosseum-w1":
+				if arg 1 is set:
+					if arg 1 is "help":
+						send "&e=========<&6ColShopSigns&e>========="
+						send "%{colshopsigns::help::title}%&e&l/colshopsigns create [prijs] [item] [aantal items] [enchant]"
+						send "%{colshopsigns::help::title}%&e&l/css create [prijs] [item] [aantal items] [enchant]"
+						send "%{colshopsigns::help::title}%&6Zet op een sign een item die een bepaalde prijs kost."
+						send "%{colshopsigns::help::title}%&e&l/colshopsigns [remove]"
+						send "%{colshopsigns::help::title}%&e&l/css [remove]"
+						send "%{colshopsigns::help::title}%&6Verwijder een ColShopSign."
+						send "&e=========<&6ColShopSigns&e>========="
+						stop
+					if arg 1 is "create":
+						if arg 2 is set:
+							if arg 3 is set:
+								if arg 4 is set:
+									set {_loc} to location of targeted block
+									set {colshopsigns::prijs::%{_loc}%} to arg 2
+									set {colshopsigns::item::%{_loc}%} to arg 3
+									set {colshopsigns::iaantal::%{_loc}%} to arg 4
+									set {colshopsigns::enchant::%{_loc}%} to ""
+									set {colshopsigns::elevel::%{_loc}%} to ""
+
+
+									replace every "_" with " " in {colshopsigns::prijs::%{_loc}%}
+									replace every "_" with " " in {colshopsigns::item::%{_loc}%}
+									replace every "_" with " " in {colshopsigns::iaantal::%{_loc}%}
+
+									set line 1 of targeted block to "%{colshopsigns::signtitle::buy}%"
+									set line 2 of targeted block to "&e%{colshopsigns::prijs::%{_loc}%}%"
+									set line 3 of targeted block to "&e%{colshopsigns::iaantal::%{_loc}%}% %{colshopsigns::item::%{_loc}%}%"
+
+									send "%{colshopsigns::title}%Je hebt een &eColShopSign &6gemaakt met de volgende eigenschappen:"
+									send "%{colshopsigns::help::title}% &6&lPrijs: &e%arg 2%"
+									send "%{colshopsigns::help::title}% &6&lItem: &e%arg 3%"
+									send "%{colshopsigns::help::title}% &6&lAantal: &e%arg 4%"
+									stop
+								else:
+									set {_loc} to location of targeted block
+									set {colshopsigns::prijs::%{_loc}%} to arg 2
+									set {colshopsigns::item::%{_loc}%} to arg 3
+									set {colshopsigns::iaantal::%{_loc}%} to arg 4
+									set {colshopsigns::enchant::%{_loc}%} to ""
+									set {colshopsigns::elevel::%{_loc}%} to ""
+
+									replace every "_" with " " in {colshopsigns::prijs::%{_loc}%}
+									replace every "_" with " " in {colshopsigns::item::%{_loc}%}
+									replace every "_" with " " in {colshopsigns::iaantal::%{_loc}%}
+
+									set line 1 of targeted block to "%{colshopsigns::signtitle::buy}%"
+									set line 2 of targeted block to "&e%{colshopsigns::prijs::%{_loc}%}%"
+									set line 3 of targeted block to "&e%{colshopsigns::iaantal::%{_loc}%}% %{colshopsigns::item::%{_loc}%}%"
+
+									send "%{colshopsigns::title}%Je hebt een &eColShopSign &6gemaakt met de volgende eigenschappen:"
+									send "%{colshopsigns::help::title}% &6&lPrijs: &e%arg 2%"
+									send "%{colshopsigns::help::title}% &6&lItem: &e%arg 3%"
+									send "%{colshopsigns::help::title}% &6&lAantal: &e1"
+									stop
+							else:
+								send "%{colshopsigns::title}%Je moet nog een item opgeven."
+								stop
+					
+					if arg 1 is "remove":
+
+						set {_loc} to location of targeted block
+						delete {colshopsigns::prijs::%{_loc}%}
+
+						send "%{colshopsigns::title}%Je hebt de ColShopSign succesvol weggehaalt."
+						stop
+
+					else:
+						send "%{colshopsigns::title}%%{colshopsigns::text::help}%"
+						stop
+				else:
+					send "%{colshopsigns::title}%%{colshopsigns::text::help}%"
+					stop
+			else:
+				send "%{colshopsigns::title}%&4Je moet in de wereld: &cColosseum-w1 &4zitten om deze command uit te voeren."
+				stop
+		else:
+			send "%{colshopsigns::title}%%{colshopsigns::text::nep}%"
+			stop
+
+on rightclick:
+	set {_loc} to location of targeted block
+	if {colshopsigns::prijs::%{_loc}%} is set:
+		if {colshopsigns::item::%{_loc}%} is set:
+			if {colshopsigns::iaantal::%{_loc}%} is set:
+				send "%{colshopsigns::help::title}% &6&lPrijs: &e%{colshopsigns::prijs::%{_loc}%}%"
+				send "%{colshopsigns::help::title}% &6&lItem: &e%{colshopsigns::item::%{_loc}%}%"
+				send "%{colshopsigns::help::title}% &6&lAantal items: &e%{colshopsigns::iaantal::%{_loc}%}%"
+				stop
+
+			else:
+				send "%{colshopsigns::help::title}% &6&lPrijs: &e%{colshopsigns::prijs::%{_loc}%}%"
+				send "%{colshopsigns::help::title}% &6&lItem: &e%{colshopsigns::item::%{_loc}%}%"
+				send "%{colshopsigns::help::title}% &6&lAantal items: &e%{colshopsigns::iaantal::%{_loc}%}%"
+				stop
+
+
+on leftclick on sign:
+	if player is in world "Colosseum-w1":
+		if {colshopsigns::prijs::%location of clicked block%} is set:
+			cancel event
+			if line 1 of clicked block is "%{colshopsigns::signtitle::buy}%":
+
+				set {_price} to line 2 of clicked block
+				set {_item} to {colshopsigns::item::%location of clicked block%} parsed as an item
+				set {_iaantal} to {colshopsigns::iaantal::%location of clicked block%}
+				
+				replace "&e" with "" in {_price}
+				replace "&e" with "" in {_item}
+				replace "&e" with "" in {_iaantal}
+
+				
+
+				if "%{_price}-1%" parsed as a number is less than {colosseumgeld::total::%player%}:
+					send "%{colshopsigns::title}%Je hebt dit item gekocht."
+					remove {_price} parsed as a number from {colosseumgeld::total::%player%}
+					give {_iaantal} of {_item} to player
+					stop
+
+				else:
+					send "%{colshopsigns::title}%Je hebt onvoldoende geld om dit item te kopen."

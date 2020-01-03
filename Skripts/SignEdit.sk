@@ -1,0 +1,49 @@
+on load:
+	set {signedit::title} to "&e<&6SignEdit&e> &6"
+	set {signedit::text::nep} to "&4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+	set {signedit::text::help} to "Doe &e/signedit help &6voor meer informatie."
+
+
+command /signedit [<text>] [<text>]:
+	aliases: /se
+	trigger:
+		if player has permission "signedit.use" OR "signedit.*":
+			if arg 1 is set:
+				if arg 1 is "help":
+					send "&e=========&l&e<&6SignEdit>&e========="
+					send "&e&l/signedit [regel] [tekst] &7:: &6Verander de regels van een sign naar gewenste tekst."
+					send "&e=========&l&e<&6SignEdit>&e========="
+					stop
+				if targeted block is a sign:
+					if arg 1 is "1":
+						set {signedit::text::%player%} to arg 2
+						replace every "&" with "§" in {signedit::text::%player%}
+						set line 1 of targeted block to "%{signedit::text::%player%}%"
+						stop
+					if arg 1 is "2":
+						set {signedit::text::%player%} to arg 2
+						replace every "&" with "§" in {signedit::text::%player%}
+						set line 2 of targeted block to "%{signedit::text::%player%}%"
+						stop
+					if arg 1 is "3":
+						set {signedit::text::%player%} to arg 2
+						replace "&" with "§" in {signedit::text::%player%}
+						set line 3 of targeted block to "%{signedit::text::%player%}%"
+						stop
+					if arg 1 is "4":
+						set {signedit::text::%player%} to arg 2
+						replace "&" with "§" in {signedit::text::%player%}
+						set line 4 of targeted block to "%{signedit::text::%player%}%"
+						stop
+				if targeted block is not a sign:
+					send "%{signedit::title}%&4Dit is geen sign, deze command is alleen uitvoerbaar op signs."
+					stop
+				else:
+					send "%{signedit::title}% %{signedit::text::help}%"
+					stop
+			else:
+				send "%{signedit::title}% %{signedit::text::help}%"
+				stop
+		else:
+			send "%{signedit::title}% %{signedit::text::nep}%"
+			stop

@@ -1,0 +1,21 @@
+on enable:
+	set {cw::title} to "&8[&eCraftWars&8]&7" #Default: "&8[&eCraftWars&8]&7"
+
+
+function openShop(p: player, type: string, page: string):
+	if {_type} is "engineer":
+		if {_page} is "main":
+			open chest with 1 rows named "&eMachines Shop" to {_p}
+
+			make gui slot 0 of {_p} with a book named "&3Dirt Machine" to close then run function confirmBuy({_p}, "dirt_machine")
+
+function confirmBuy(p: player, item: string):
+	open chest with 3 rows named "&eWeet je het zeker?" to {_p}
+
+	make gui slot 11 of {_p} with a green stained clay named "&2Ja" to close then run function buyItem({_p}, {_item})
+	make gui slot 15 of {_p} with a red stained clay named "&4Nee" to close then run function openShop({_p}, "engineer", "main")
+
+function buyItem(p: player, item: string):
+	if {_item} is "dirt_machine":
+		give {_p} a book named "&3Dirt Machine" with lore "&8Plaats deze om een dirt machine te maken."
+		send "%{cw::title}% Veel plezier met je &8Dirt Machine&7!" to {_p}

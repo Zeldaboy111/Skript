@@ -1,0 +1,57 @@
+options:
+	{kills::%player%} = {kills::%arg 1%}
+	{deaths::%player%} = {deaths::%arg 1%}
+
+on load:
+	set {skywars::title} to "&1[&5SKy&6Wars&1]"
+
+on join:
+	if {kills::%player%} is not set:
+		set {kills::%player%} to 0
+	if {deaths::%player%} is not set:
+		set {deaths::%player%} to 0
+
+on click:
+		if the player is holding a bow named "&1&lKits" with lore "&7Klik om een kit te selecteren.":
+				execute console command "/swkitselector %player%"
+				cancel event
+				stop
+
+command /swkitselector [<offline player>] [<text>]:
+	trigger:
+		if executor is console:
+			open chest with 3 rows named "&1&lKit selector" to arg 1
+			format slot 22 of arg 1 with Skull of ("%arg 1%" parsed as an offline player) named "&eStatics" to close then run [execute console command "/swstatics %arg 1%"]
+			format slot 0 of arg 1 with bricks named "&2Builder" with lore "&7- 25 bricks" to close then run [execute console command "/swkits %arg 1% builder"] 
+			stop
+
+command /swstatics [<offline player>] [<text>]:
+	trigger:
+		if executor is console:
+			wait 3 ticks
+			open chest with 1 rows named "&e&lStatics %arg 1%" to arg 1
+			format slot 0 of arg 1 with diamond sword named "&6Kills" with lore "&eKills: %{kills::%arg 1%}%" to close then run [execute console command "/swstatics %arg 1%"]
+			format slot 1 of arg 1 with redstone dust named "&6Deaths" with lore "&eDeaths: %{deaths::%arg 1%}%" to close then run [execute console command "/swstatics %arg 1%"]
+			stop
+		if executor is player:
+			if arg 1 is not set:
+				wait 3 ticks
+				open chest with 1 rows named "&e&lStatics %player%" to player
+				format slot 0 of player with diamond sword named "&6Kills" with lore "&eKills: %{kills::%player%}%" to close then run [execute console command "/swstatics %player%"]
+				format slot 1 of player with redstone dust named "&6Deaths" with lore "&eDeaths: %{deaths::%player%}%" to close then run [execute console command "/swstatics %player%"]
+				stop
+			else:
+				send "%{skywars::title}% &4Je hebt een argument te veel."
+				stop
+
+command /swkits [<offline player>] [<text>]:
+	trigger:
+		if executor is console:
+			set {kitselected::%arg 1%} to "builder"
+			stop
+
+
+command /bow:
+	trigger:
+		give player a bow named "&1&lKits" with lore "&7Klik om een kit te selecteren."
+		stop

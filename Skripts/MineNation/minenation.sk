@@ -1,0 +1,405 @@
+on enable:
+	set {mn_prefix} to "&0[&b&lMineNation&0]"
+
+command /minenation [<text>] [<text>]:
+	aliases: mn
+	trigger:
+		if player has permission "minenation.*":
+			if arg 1 is "help":
+				if arg 2 is not set:
+					send "&0____________[&b&lMineNation&0]____________"
+					json("%player%", "&3/mn help [pagina]||ttp:&bGeeft de help pagina weer||sgt:/mn help [pagina]")
+					json("%player%", "&3/mn info||ttp:&bKrijg info over deze Skript||cmd:/mn info")
+					json("%player%", "&3/mn permissions||ttp:&bZie alle permissies van deze Skript||cmd:/mn permissions")
+					json("%player%", "&3/mn addworld [world]||ttp:&bVoeg een wereld toe aan de MineNation werelden||sgt:/mn addworld [world]")
+					json("%player%", "&3/mn removeworld [world]||ttp:&bVerwijder een wereld van de MineNation werelden||sgt:/mn removeworld [world]")
+					json("%player%", "&3Pagina|| &f&lverder||ttp:&bGa naar de volgende pagina||cmd:/mn help 2|| &f&lterug||ttp:&bGa een pagina terug||cmd:/mn help 1")
+					send "&0____________[&b&lPagina 1/4&0]____________"
+					stop
+
+				if arg 2 is "1":
+					send "&0____________[&b&lMineNation&0]____________"
+					json("%player%", "&3/mn help [1/2]||ttp:&bGeeft de help pagina weer||sgt:/mn help [1/2]")
+					json("%player%", "&3/mn info||ttp:&bKrijg info over deze Skript||cmd:/mn info")
+					json("%player%", "&3/mn permissions||ttp:&bZie alle permissies van deze Skript||cmd:/mn permissions")
+					json("%player%", "&3/mn addworld [world]||ttp:&bVoeg een wereld toe aan de MineNation werelden||sgt:/mn addworld [world]")
+					json("%player%", "&3/mn removeworld [world]||ttp:&bVerwijder een wereld van de MineNation werelden||sgt:/mn removeworld [world]")
+					json("%player%", "&3Pagina|| &f&lverder||ttp:&bGa naar de volgende pagina||cmd:/mn help 2|| &f&lterug||ttp:&bGa een pagina terug||cmd:/mn help 1")
+					send "&0____________[&b&lPagina 1/4&0]____________"
+					stop
+
+				if arg 2 is "2":
+					send "&0____________[&b&lMineNation&0]____________"
+					json("%player%", "&3/mn worldlist||ttp:&bKrijg een lijst met alle MineNation werelden||cmd:/mn worldlist")
+					json("%player%", "&3/mn setlobby||ttp:&bZet de lobby van MineNation||cmd:/mn setlobby")
+					json("%player%", "&3/mn createteam [naam]||ttp:&bMaak een team||sgt:/mn createteam [naam]")
+					json("%player%", "&3/mn deleteteam [naam]||ttp:&bVerwijder een team||sgt:/mn deleteteam [naam]")
+					json("%player%", "&3/mn teamconfig||ttp:&bKrijg een configuratie scherm van een team||cmd:/mn teamconfig")
+					json("%player%", "&3Pagina|| &f&lverder||ttp:&bGa naar de volgende pagina||cmd:/mn help 3|| &f&lterug||ttp:&bGa een pagina terug||cmd:/mn help 1")
+					send "&0____________[&b&lPagina 2/4&0]____________"
+					stop
+
+				if arg 2 is "3":
+					send "&0____________[&b&lMineNation&0]____________"
+					json("%player%", "&3/mn teamlist||ttp:&bKrijg een lijst met alle teams||cmd:/mn teamlist")
+					json("%player%", "&3/mn join [team]||ttp:&bJoin een team||sgt:/mn join [team]")
+					json("%player%", "&3/mn leave||ttp:&bLeave je team||sgt:/mn join team")
+					json("%player%", "&3/mn setspawn||ttp:&bZet de spawn van je team||cmd:/mn setspawn")
+					json("%player%", "&3/mn tspawn||ttp:&bGa naar de spawn van je team||cmd:/mn tspawn")
+					json("%player%", "&3Pagina|| &f&lverder||ttp:&bGa naar de volgende pagina||cmd:/mn help 4|| &f&lterug||ttp:&bGa een pagina terug||cmd:/mn help 2")
+					send "&0____________[&b&lPagina 3/4&0]____________"
+					stop
+
+				if arg 2 is "4":
+					send "&0____________[&b&lMineNation&0]____________"
+					json("%player%", "&3/mn spawn||ttp:&bGa naar de MineNation spawn||cmd:/mn spawn")
+					json("%player%", "&3/mn achievements||ttp:&bKrijg een achievements GUI||cmd:/mn achievements")
+					json("%player%", "&3/mn baan||ttp:&bKrijg een GUI met alle banen.")
+					json("%player%", "&3Pagina|| &f&lverder||ttp:&bGa naar de volgende pagina||cmd:/mn help 4|| &f&lterug||ttp:&bGa een pagina terug||cmd:/mn help 3")
+					send "&0____________[&b&lPagina 3/4&0]____________"
+					stop
+
+			if arg 1 is "info":
+				send "&0____________[&b&lMineNation&0]____________"
+				send "&9Maker: &f&lZeldaboy111"
+				send "&9Versie: &f&l1.0"
+				send "&0____________[&b&lMineNation&0]____________"
+				stop
+
+			if arg 1 is "permissions":
+				send "&0____________[&b&lMineNation&0]____________"
+				send "&9De permissie(s) is/zijn:"
+				send "&f&lminenation.*"
+				send "&f&lminenation.team.*"
+				send "&0____________[&b&lMineNation&0]____________"
+				stop
+
+			if arg 1 is "addworld":
+				if arg 2 is set:
+					if {mn::mnworlds::*} contains "%arg 2%":
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Deze wereld is al een MineNation wereld."
+						json("%player%", "&3/mn worldlist||ttp:&bKrijg een lijst met alle MineNation werelden||cmd:/mn worldlist")
+						json("%player%", "&3/mn addworld [world]||ttp:&bVoeg een wereld toe aan de MineNation werelden||sgt:/mn addworld [world]")
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+						
+
+					else:
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Succesvol de wereld: &f&l%arg 2% &9toegevoegd aan de MineNation werelden."
+						send "&0____________[&b&lMineNation&0]____________"
+						add arg 2 to {mn::mnworlds::*}
+						stop
+						
+				else:
+					send "&0____________[&b&lMineNation&0]____________"
+					send "&9Je moet nog een &f&lwereld &3opgeven."
+					json("%player%", "&3/mn addworld [world]||ttp:&bVoeg een wereld toe aan de MineNation werelden||sgt:/mn addworld [world]")
+					send "&0____________[&b&lMineNation&0]____________"
+					stop
+
+			if arg 1 is "removeworld":
+				if arg 2 is set:
+					if {mn::mnworlds::*} contains "%arg 2%":
+
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Succesvol de wereld: &f&l%arg 2% &9verwijderd uit de MineNation werelden."
+						send "&0____________[&b&lMineNation&0]____________"
+						remove arg 2 from {mn::mnworlds::*}
+
+						stop
+
+					else:
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Deze wereld is geen MineNation wereld."
+						json("%player%", "&3/mn worldlist||ttp:&9Krijg een lijst met alle MineNation werelden||cmd:/mn worldlist")
+						json("%player%", "&3/mn removeworld [world]||ttp:&9Verwijder een wereld van de MineNation werelden||sgt:/mn removeworld [world]")
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+
+			if arg 1 is "worldlist":
+				delete {mn::message::mnworlds::*}
+				set {mn::message::mnworlds::*} to {mn::mnworlds::*}
+				
+				size of {mn::message::mnworlds::*} is 0:
+					add "Er zijn geen MineNation werelden." to {mn::message::mnworlds::*}
+
+				send "&0____________[&b&lMineNation&0]____________"
+				send "&9Dit is de lijst met alle werelden:"
+				send "&f&l%{mn::message::mnworlds::*}%"
+				send "&0____________[&b&lMineNation&0]____________"
+				stop
+
+			if arg 1 is "setlobby":
+				set {mn::lobby} to location of player
+				send "&0____________[&b&lMineNation&0]____________"
+				send "&9Succesvol de lobby gezet op de locatie: &f&l%{mn::lobby}%&9."
+				send "&0____________[&b&lMineNation&0]____________"
+				stop
+
+			if arg 1 is "createteam":
+				if arg 2 is set:
+					if {mn::teams::%arg 2%} is false:
+						set {mn::teams::%arg 2%} to true
+						set {mn::teams::leader::%arg 2%} to "%player%"
+
+						add player to {mn::teams::%arg 2%::players::*}
+						set {mn::team::%player%} to arg 2
+						set {mn::team::rank::%player%} to "&f&lLeider"
+
+						set {mn::hasteam::%player%} to true
+
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Succesvol het team: &f&l%arg 2% &9aangemaakt."
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+
+					if {mn::teams::%arg 2%} is not set:
+						set {mn::teams::%arg 2%} to true
+						set {mn::teams::leader::%arg 2%} to "%player%"
+
+						add player to {mn::teams::%arg 2%::players::*}
+						set {mn::team::%player%} to arg 2
+						set {mn::team::rank::%player%} to "&f&lLeider"
+
+						set {mn::hasteam::%player%} to true
+
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Succesvol het team: &f&l%arg 2% &9aangemaakt."
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+
+					else:
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Dit is al een team."
+						json("%player%", "&3/mn teamlist||ttp:&bKrijg een lijst met alle teams||cmd:/mn teamlist")
+						json("%player%", "&3/mn createteam [naam]||ttp:&bMaak een team||sgt:/mn createteam [naam]")
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+
+				else:
+					send "&0____________[&b&lMineNation&0]____________"
+					send "&9Je moet nog een team opgeven."
+					json("%player%", "&3/mn createteam [naam]||ttp:&bMaak een team||sgt:/mn createteam [naam]")
+					send "&0____________[&b&lMineNation&0]____________"
+					stop
+
+			if arg 1 is "deleteteam":
+				if arg 2 is set:
+					if {mn::teams::%arg 2%} is true:
+						set {_mndelete::%player%} to false
+
+						if {mn::teams::leader::%arg 2%} is "%player%":
+							set {_mndelete::%player%} to true
+
+						if player has permission "minenation.*":
+							set {_mndelete::%player%} to true
+
+						if {_mndelete::%player%} is true:
+							delete {mn::teams::%arg 2%}
+							delete {mn::teams::leader::%arg 2%}
+							remove {mn::teams::%arg 2%} from {mn::teams::*}
+
+							set {mn::hasteam::%player%} to false
+
+							set {mn::team::%player%} to "&f&lGeen team"
+							set {mn::team::rank::%player%} to "&f&lGeen team"
+
+							send "&0____________[&b&lMineNation&0]____________"
+							send "&9Succesvol het team &f&l%arg 2% &9verwijderd."
+							send "&0____________[&b&lMineNation&0]____________"
+							stop
+
+						else:
+							send "&0____________[&b&lMineNation&0]____________"
+							send "&9Jij bent niet de leider van dit team."
+							send "&0____________[&b&lMineNation&0]____________"
+							stop
+					else:
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&9Dit team bestaat niet."
+						json("%player%", "&3/mn teamlist||ttp:&bKrijg een lijst met alle teams||cmd:/mn teamlist")
+						json("%player%", "&3/mn deleteteam [naam]||ttp:&bVerwijder een team||sgt:/mn deleteteam [naam]")
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+
+				else:
+					send "&0____________[&b&lMineNation&0]____________"
+					send "&9Je moet nog een team opgeven."
+					json("%player%", "&3/mn deleteteam [naam]||ttp:&bVerwijder een team||sgt:/mn deleteteam [naam]")
+					send "&0____________[&b&lMineNation&0]____________"
+					stop
+
+			
+			if arg 1 is "setspawn":
+				if {mn::hasteam::%player%}  is true:
+					if {mn::team::rank::%player%} is "&f&lLeider" OR "&f&lCo-Leider" OR "&f&lVeteraan III" OR "&f&lVeteraan II":
+						delete {mn::teamspawn::%{mn::team::%player%}%}
+						set {mn::teamspawn::%{mn::team::%player%}%} to location of player
+						
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&3Succesvol de teamspawn gezet naar: &f&l%location of player%&3."
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+
+					else:
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&3Je moet &f&lVeteraan II &3of hoger zijn."
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+
+				else:
+					send "&0____________[&b&lMineNation&0]____________"
+					send "&9Je zit niet in een team."
+					send "&0____________[&b&lMineNation&0]____________"
+					stop
+
+
+		if arg 1 is "help":
+			if arg 2 is not set:
+				execute player command "/mn help 1"
+
+			if arg 2 is "1":
+				send "&0____________[&b&lMineNation&0]____________"
+				json("%player%", "&3/mn teamlist||ttp:&bKrijg een lijst met alle eteams||cmd:/mn teamlist")
+				json("%player%", "&3/mn join [team]||ttp:&bJoin een team||sgt:/mn join [team]")
+				json("%player%", "&3/mn leave||ttp:&bLeave je team||sgt:/mn join team")
+				json("%player%", "&3/mn spawn||ttp:&bGa naar de MineNation spawn||cmd:/mn spawn")
+				json("%player%", "&3/mn tspawn||ttp:&bGa naar je team spawn||cmd:/mn tspawn")
+				json("%player%", "&3Pagina|| &f&lverder||ttp:&bGa naar de volgende pagina||cmd:/mn help 2|| &f&lterug||ttp:&bGa een pagina terug||cmd:/mn help 1")
+				send "&0____________[&b&lPagina 1/2&0]____________"
+				stop
+
+			if arg 2 is "2":
+				send "&0____________[&b&lMineNation&0]____________"
+				json("%player%", "&3/mn achievements||ttp:&bKrijg een achievements GUI||cmd:/mn achievements")
+				json("%player%", "&3/mn baan||ttp:&bKrijg een GUI met alle banen.")
+				json("%player%", "&3Pagina|| &f&lverder||ttp:&bGa naar de volgende pagina||cmd:/mn help 2|| &f&lterug||ttp:&bGa een pagina terug||cmd:/mn help 1")
+				send "&0____________[&b&lPagina 2/2&0]____________"
+				stop
+
+
+		if arg 1 is "teamlist":
+			delete {mn::looped::teams::*}
+			loop {mn::teams::*}:
+				add loop-index to {mn::looped::teams::*}
+				replace all "," with "%nl%" in {mn::loop::teams::*}
+					
+			send "&0____________[&b&lMineNation&0]____________"
+			send "&9Dit is een lijst met alle teams:"
+			send "&f&l%{mn::looped::teams::*}%"
+			send "&0____________[&b&lMineNation&0]____________"
+			stop
+
+		if arg 1 is "join":
+			if arg 2 is set:
+				if {mn::hasteam::%player%} is not true:
+					if {mn::needinvite::teams::%arg 2%} is true:
+						if {mn::invited::teams::%arg 2%::*} contains "%player%":
+
+							remove player from {mn::invited::teams::%arg 2%::*}
+
+							add player to {mn::teams::%arg 2%::players::*}
+							set {mn::team::%player%} to arg 2
+							set {mn::team::rank::%player%} to "&f&lLid"
+
+							set {mn::hasteam::%player%} to true
+
+							send "&0____________[&b&lMineNation&0]____________"
+							send "&3Je bent het team: &f&l%arg 2% &3gejoined."
+							send "&0____________[&b&lMineNation&0]____________"
+							stop
+
+						else:
+							send "&0____________[&b&lMineNation&0]____________"
+							send "&3Dit team is alleen te joinen door middel %nl%van een invite."
+							send "&0____________[&b&lMineNation&0]____________"
+							stop
+					
+					else:
+						add player to {mn::teams::%arg 2%::players::*}
+						set {mn::team::%player%} to arg 2
+						set {mn::team::rank::%player%} to "&f&lLid"
+
+						set {mn::hasteam::%player%} to true
+
+
+						send "&0____________[&b&lMineNation&0]____________"
+						send "&3Je bent het team: &f&l%arg 2% &3gejoined."
+						send "&0____________[&b&lMineNation&0]____________"
+						stop
+				
+				else:
+					send "&0____________[&b&lMineNation&0]____________"
+					send "&3Je zit al in een team."
+					send "&0____________[&b&lMineNation&0]____________"
+					stop
+
+			else:
+				send "&0____________[&b&lMineNation&0]____________"
+				send "&3Je moet nog een &f&lteam &3opgeven."
+				json("%player%", "&3/mn join [team]||ttp:&bJoin een team||sgt:/mn join [team]")
+				send "&0____________[&b&lMineNation&0]____________"
+				stop
+
+		if arg 1 is "leave":
+			if {mn::hasteam::%player%} is true:
+				remove player from {mn::teams::%{mn::team::%player%}%::players::*}
+				
+				set {mn::team::rank::%player%} to "&f&lGeen team"
+				
+
+				set {mn::hasteam::%player%} to false
+
+				send "&0____________[&b&lMineNation&0]____________"
+				send "&3Je bent het team: &f&l%{mn::team::%player%}% &3verlaten"
+				send "&0____________[&b&lMineNation&0]____________"
+
+				set {mn::team::%player%} to "&f&lGeen team"
+				stop
+
+			else:
+				send "&0____________[&b&lMineNation&0]____________"
+				send "&3Je zit niet in een team."
+				send "&0____________[&b&lMineNation&0]____________"
+				stop
+
+
+		if arg 1 is "spawn" OR "lobby":
+			tp(player, {mn::lobby})
+			stop
+
+		if arg 1 is "tspawn":
+			tp(player, {mn::teamspawn::%{mn::team::%player%}%})
+
+
+		if arg 1 is "achievements":
+			open chest with 6 rows named "&3&lAchievements" to player
+
+
+			format slot 1 of player with a paper named "&f&lBeroep: Alles" to be unstealable
+			
+			format slot 3 of player with green hardened clay named "&2Achievement klaar" to be unstealable
+			format slot 4 of player with orange hardened clay named "&6Achievement nog niet klaar" to be unstealable
+			format slot 5 of player with red hardened clay named "&4Achievement niet unlocked" to be unstealable
+
+			format slot 7 of player with a paper named "&f&lBeroep: Alles" to be unstealable
+
+			if {mn::baan::%player%} is set:
+				format slot 18 of player with green hardened clay named "&2Krijg een baan" to be unstealable
+			else:
+				format slot 18 of player with orange stained clay named "&6Krijg een baan" to be unstealable
+			#if {mn::achievements::%player%::unlocked::<achievement>} is true:
+
+			stop
+
+		if arg 1 is "baan":
+			baanGui(player, "1")
+
+		else:
+			send "&0____________[&b&lMineNation&0]____________"
+			send "&9Doe:"
+			json("%player%", "&3/mn help||ttp:&bGeeft de help pagina weer||cmd:/mn help 1")
+			send "&0____________[&b&lMineNation&0]____________"
+			stop

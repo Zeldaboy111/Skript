@@ -1,0 +1,103 @@
+function newFile(floc: text) :: text:
+	if file "%{_floc}%" doesn't exist:
+		create file "%{_floc}%"
+
+function varFile(path: text, file: text) :: texts:
+	if file "%{_file}%" exists:
+		set {_var::*} to yaml list "%{_path}%" of file "%{_file}%"
+		return {_var::*}
+
+function capitalizeFirst(text: texts) :: texts:
+
+	loop {_text::*}:
+		set {_first-char} to first character of loop-value
+		set {_remaining} to last (length of loop-value - 1) characters of loop-value
+
+		set {_output::%loop-index%} to "%{_first-char} in upper case%%{_remaining}%"
+
+	return {_output::*}
+
+#{crate::rinfo::Basic::*}
+#{crate::rinfo::Epic::*}
+#{crate::rinfo::Legendary::*}
+
+function openCrate(p: player, t: string, n: string):
+	loop {crate::rinfo::%{_t}%::*}:
+		add {crate::%{_t}%::%loop-index%} to {_roll::*}
+
+	open chest with 3 rows named {_n} to {_p}
+	wait a tick
+	set {_speedFinal} to 1
+	set {_Selector1} to 4
+	set {_Selector2} to 22
+	loop 9 times:
+		set slot loop-number - 1 of {_p}'s current inventory to orange stained glass pane named " "
+		set slot loop-number + 17 of {_p}'s current inventory to orange stained glass pane named " "
+	set slot {_Selector1} of {_p}'s current inventory to shiny light green stained glass named " "
+	set slot {_Selector2} of {_p}'s current inventory to shiny light green stained glass named " "
+
+	loop random integer between 10 and 30 times:
+		if inventory name of {_p}'s current inventory is {_n}:
+			set {_run} to true
+		else:
+			set {_run} to false
+
+		if {_run} is true:
+			set {_sel} to 9
+			loop 8 times:
+				set {_sel2} to {_sel} -1
+				set {_item::%{_sel}%} to {_item::%{_sel2}%}
+				subtract 1 from {_sel}
+			
+			set {_item::1} to a random element out of {_roll::*}
+			
+			loop 9 times:
+				set slot 8 + loop-number-2 of {_p}'s current inventory to {_item::%loop-number-2%}
+
+			add 1 to {_speed}
+
+			if {_speed} is 5:
+				set {_speed} to 0
+				add 1 to {_speedFinal}
+				
+			loop {_speedFinal} times:
+				wait 1 tick
+
+		else:
+			exit loop
+
+	if {_run} is true:
+		send "%{_p}% &a%{_item::5}%" to {_p}
+		give {_p} slot 13 of {_p}'s current inventory
+		remove 1 of {_p}'s tool from {_p}'s tool
+
+function color(s: string) :: string:
+	replace all "&" with "§" in {_s}
+	return {_s}
+
+every 1 tick:
+	
+	delete {crate::rinfo::bname::*}
+	delete {crate::rinfo::ename::*}
+	delete {crate::rinfo::lname::*}
+	delete {crate::rinfo::name::*}
+
+	set {crate::rinfo::bname::*} to yaml list "crates.info.Basic.cname" of file "Files\Crates\list.yml"
+	set {crate::rinfo::ename::*} to yaml list "crates.info.Epic.cname" of file "Files\Crates\list.yml"
+	set {crate::rinfo::lname::*} to yaml list "crates.info.Legendary.cname" of file "Files\Crates\list.yml"
+
+	add "%{crate::rinfo::bname::*}%" to {crate::rinfo::name::*}
+	add "%{crate::rinfo::ename::*}%" to {crate::rinfo::name::*}
+	add "%{crate::rinfo::lname::*}%" to {crate::rinfo::name::*}
+
+
+
+on inventory click:
+	#loop {crate::rinfo::name::*}:
+		#send "%{crate::rinfo::name::*}%"
+	if inventory name of player's current inventory is "§7Basic crate":
+		cancel event
+
+command /d:
+	trigger:
+		send "%{crate::rinfo::name::*}%"

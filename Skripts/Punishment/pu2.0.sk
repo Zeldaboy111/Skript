@@ -1,0 +1,83 @@
+options:
+	{ban::%player%::btime} = {ban::%arg 1%::btime}
+	{ban::%player%::btime} = {ban::%loop-value%::btime}
+
+	{ban::%player%::tbtime} = {ban::%arg 1%::tbtime}
+	{ban::%player%::tbtime} = {ban::%loop-value%::tbtime}
+
+	{ban::%player%::bformat} = {ban::%arg 1%::bformat}
+	{ban::%player%::bformat} = {ban::%loop-value%::bformat}
+
+	{ban::%player%::btsec} = {ban::%arg 1%::btsec}
+	{ban::%player%::btsec} = {ban::%loop-value%::btsec}
+
+	{ban::%player%::btmin} = {ban::%arg 1%::btmin}
+	{ban::%player%::btmin} = {ban::%loop-value%::btmin}
+
+	{ban::%player%::unban} = {ban::%arg 1%::unban}
+
+on load:
+	set {pu2.0::title} to "&4[&cPU&4]&c"
+
+every 1 second:
+	loop {ban::banlist::*}:
+		add 1 to {ban::%loop-value%::btsec}
+
+		if {ban::%loop-value%::bformat} is "sec":
+			if {ban::%loop-value%::btsec} is more than {ban::%loop-value%::tbtime}-1:
+				remove loop-value from {ban::banlist::*}
+				delete {ban::%loop-value%::btime}
+				delete {ban::%loop-value%::tbtime}
+				delete {ban::%loop-value%::btsec}
+				delete {ban::%loop-value%::btmin}
+				stop
+
+		else:
+			if {ban::%loop-value%::btsec} is more than 59:
+				add 1 to {ban::%loop-value%::btmin}
+				delete {ban::%loop-value%::btsec}
+
+			if {ban::%loop-value%::bformat} is "min":
+			
+				if {ban::%loop-value%::btmin} is more than {ban::%loop-value%::tbtime}-1:
+					remove loop-value from {ban::banlist::*}
+					delete {ban::%loop-value%::btime}
+					delete {ban::%loop-value%::tbtime}
+					delete {ban::%loop-value%::btsec}
+					delete {ban::%loop-value%::btmin}
+					stop
+
+
+command /punishment [<offline player>]:
+	aliases: pu
+	trigger:
+		if arg 1 is set:
+			open chest with 2 rows named "&4&l%arg 1%" to player
+			format slot 0 of player with a diamond named "&b&lX-Ray" with lore "&77 dagen ban" to close then run [execute console command "/cpu %arg 1% X-Ray"]
+			stop
+		else:
+			send "%{pu2.0::title}% Je moet nog een speler opgeven."
+			stop
+
+command /cpu [<offline player>] [<text>]:
+	trigger:
+		if executor is console:
+			if arg 2 is "X-Ray":
+				add arg 1 to {ban::banlist::*}
+				set {ban::%arg 1%::btime} to 0
+				set {ban::%arg 1%::tbtime} to 1
+				set {ban::%arg 1%::bformat} to "min"
+				set {ban::%arg 1%::unban} to {ban::%arg 1%::tbtime}-{ban::%arg 1%::btime}
+				kick arg 1 due to "&6&lBanned!%nl%&4Rede: &cX-Ray%nl%&4Ban date: &c%now%%nl%&4Unban over: &c%{ban::%arg 1%::unban}% dagen%nl%&4Appeal: &cNee"
+				stop
+
+command /punban [<offline player>]:
+	trigger:
+		if {ban::%arg 1%::btime} is more than 0:
+			delete {ban::%arg 1%::btime}
+			remove arg 1 from {ban::banlist::*}
+			send "%{pu2.0::title}% Succesvol de speler &4%arg 1% &cunbanned."
+			stop
+		else:
+			send "%{pu2.0::title}% Deze speler is niet gebanned."
+			stop

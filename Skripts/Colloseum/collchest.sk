@@ -1,0 +1,180 @@
+
+on load:
+	set {collchest::text::title} to "&1[&bColChest&1] &b"
+	set {collchest::list::common} to "Er zijn nog geen common CollChests."
+	set {collchest::list::epic} to "Er zijn nog geen epic CollChests."
+	set {collchest::list::legendary} to "Er zijn nog geen legendary CollChests."
+
+on load:
+	if file "plugins\CollChests\CommonChests\location.yml" doesn't exist:
+		create file "plugins\CollChests\CommonChests\location.yml"
+	if file "plugins\CollChests\EpicChests\location.yml" doesn't exist:
+		create file "plugins\CollChests\EpicChests\location.yml"
+	if file "plugins\CollChests\LegendaryChests\location.yml" doesn't exist:
+		create file "plugins\CollChests\LegendaryChests\location.yml"
+
+every 1 tick:
+	clear {collchests::commonchests::*}
+	clear {collchests::epicchests::*}
+	clear {collchests::legendarychests::*}
+	set {collchests::commonchests::*} to yml list "common.location" of file "plugins\CollChests\CommonChests\location.yml"
+	set {collchests::epicchests::*} to yml list "epic.location" of file "plugins\CollChests\EpicChests\location.yml"
+	set {collchests::legendarychests::*} to yml list "legendary.location" of file "plugins\CollChests\LegendaryChests\location.yml"
+
+command /collchest [<text>] [<text>]:
+	aliases: cc
+	trigger:
+		if player has permission  "collchest.add" OR "collchest.*":
+			if player is in world "Colosseum-w1":
+				if arg 1 is "help":
+					send "&1==========[&bCollChest&1]=========="
+					send "&3/collchest add common/epic/legendary &7&k::&f &bMaak een collchest."
+					send "&3/collchest remove &7&k::&f &bRemove de collchest waar je tegenover staat."
+					send "&3/collchest list &7&k::&f &bKrijg een lijst met alle locaties van de CollChests."
+					send "&1==========[&bCollChest&1]=========="
+					stop
+
+				if arg 1 is "add":
+					if targeted block is a chest:
+
+						set {_loc} to location of targeted block
+
+						if {collchests::commonchests::*} don't contain {_loc}:
+							if arg 2 is "common":
+
+								add "%{_loc}%" to skutil yaml list "common.location" from file "plugins\CollChests\CommonChests\location.yml"
+
+								add "%{_loc}%" to skutil yaml list "common.loot" from file "plugins\CollChests\CommonChests\location.yml"
+
+								send "%{collchest::text::title}% Je hebt de CollChest succesvol gemaakt met de volgende eigenschappen:"
+								send "&3Level: &bcommon"
+								send "&3Wereld: &b%world of player%"
+								send "&3Locatie: &b%{_loc}%"
+								send "%{collchest::text::title}% Om de rewards aan te passen, moet je in de volgende config kijken:%nl%plugins\CollChests\CommonChests\location.yml"
+								stop
+
+						if "%{collchests::epicchests::*}%" don't contain {_loc}:
+							if arg 2 is "epic":
+
+								add "%{_loc}%" to skutil yaml list "epic.location" from file "plugins\CollChests\EpicChests\location.yml"
+
+								send "%{collchest::text::title}% Je hebt de CollChest succesvol gemaakt met de volgende eigenschappen:"
+								send "&3Level: &bepic"
+								send "&3Wereld: &b%world of player%"
+								send "&3Locatie: &b%{_loc}%"
+								send "%{collchest::text::title}% Om de rewards aan te passen, moet je in de volgende config kijken:%nl%plugins\CollChests\EpicChests\location.yml"
+								stop
+
+						
+						if  "%{collchests::legendarychests::*}%" don't contain {_loc}:
+							if arg 2 is "legendary":
+
+								add "%{_loc}%" to skutil yaml list "legendary.location" from file "plugins\CollChests\LegendaryChests\location.yml"
+
+								send "%{collchest::text::title}% Je hebt de CollChest succesvol gemaakt met de volgende eigenschappen:"
+								send "&3Level: &blegendary"
+								send "&3Wereld: &b%world of player%"
+								send "&3Locatie: &b%{_loc}%"
+								send "%{collchest::text::title}% Om de rewards aan te passen, moet je in de volgende config kijken:%nl%plugins\CollChests\LegendaryChests\location.yml"
+								stop
+
+							else:
+								send "%{collchest::text::title}% &4Dit is geen bestaande collchest, doe &c/collchest help &4voor meer info, of doe &c/collchest add common/epic/legendary &4om deze command uit te voeren."
+								stop
+
+						else:
+							send "%{collchest::text::title}% &4Dit is al een CollChest."
+							stop
+
+					else:
+						send "%{collchest::text::title}% &4Dit is geen kist."
+						stop
+
+				if arg 1 is "remove":
+					if targeted block is a chest:
+						set {_loc} to location of targeted block
+
+						if {collchests::commonchests::*} contains "%{_loc}%":
+							remove "%{_loc}%" from yml list "common.location" of file "plugins\CollChests\CommonChests\location.yml"
+							send "%{collchest::text::title}% Succesvol deze CollChest geremoved."
+							stop
+						if {collchests::epicchests::*} contains "%{_loc}%":
+							remove "%{_loc}%" from yml list "epic.location" of file "plugins\CollChests\EpicChests\location.yml"
+							send "%{collchest::text::title}% Succesvol deze CollChest geremoved."
+							stop
+						if {collchests::legendarychests::*} contains "%{_loc}%":
+							remove "%{_loc}%" from yml list "legendary.location" of file "plugins\CollChests\LegendaryChests\location.yml"
+							send "%{collchest::text::title}% Succesvol deze CollChest geremoved."
+							stop
+
+						else:
+							send "%{collchest::text::title}% &4Dit is geen CollChest."
+							stop
+					else:
+						send "%{collchest::text::title}% &4Dit is geen kist."
+						stop
+
+				if arg 1 is "list":
+					send "%{collchest::text::title}% &3Dit is de lijst met alle locaties van de CollChests:"
+					if {collchests::commonchests::*} is set:
+						send "&b%{collchests::commonchests::*}%"
+					else:
+						send "&b%{collchest::list::common}%"
+					if {collchests::epicchests::*} is set:
+						send "&b%{collchests::epicchests::*}%"
+					else:
+						send "&b%{collchest::list::epic}%"
+					if {collchests::legendarychests::*} is set:
+						send "&b%{collchests::legendarychests::*}%"
+					else:
+						send "&b%{collchest::list::legendary}%"
+
+				else:
+					send "%{collchest::text::title}% &4Doe &c/collchest help &4voor meer informatie."
+					stop
+			else:
+				send "%{collchest::text::title}% &4Je kan deze command alleen uitvoeren in de wereld: &cColosseum-w1&4."
+
+		else:
+			send  "%{collchest::text::title}% &4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+			stop
+
+on rightclick on chest:
+	set {_loc} to location of clicked block
+	if {collchests::commonchests::*} contains "%{_loc}%":
+		cancel event
+		stop
+	if {collchests::epicchests::*} contains "%{_loc}%":
+		cancel event
+		stop
+	if {collchests::legendarychests::*} contains "%{_loc}%":
+		cancel event
+		stop
+
+on leftclick on chest:
+	set {_loc} to location of clicked block
+	if {collchests::commonchests::*} contains "%{_loc}%":
+		cancel event
+		stop
+	if {collchests::epicchests::*} contains "%{_loc}%":
+		cancel event
+		stop
+	if {collchests::legendarychests::*} contains "%{_loc}%":
+		cancel event
+		stop
+
+command /rt:
+	trigger:
+		set {rt} to a random object of {rt::*}
+		send "%{rt}%"
+
+command /names:
+	trigger:
+		if player has permission "collchest.names" OR "collchest.*":
+			give player a name tag named "&7Common Chest"
+			give player a name tag named "&5Epic Chest"
+			give player a name tag named "&6Legendary Chest"
+			stop
+		else:
+			send "%{collchest::text::title}% &4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+			stop

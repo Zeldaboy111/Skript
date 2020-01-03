@@ -1,0 +1,205 @@
+options:
+	{spells::wands::lightningwand::%player%} = {spells::wands::lightningwand::%loop-player%}
+	{spells::wands::lightningspark::%player%} = {spells::wands::lightningspark::%loop-player%}
+	{spells::wands::lightning::%player%} = {spells::wands::lightning::%loop-player%}
+	{spellpoints::wands::lightningspark::%player%} = {spellpoints::wands::lightningspark::%loop-player%}
+	{spells::wands::lightningspark::%player%} = {spells::wands::lightningspark::%arg 2%}
+	{spells::wands::lightning::%player%} = {spells::wands::lightning::%arg 2%}
+
+on enable:
+	set {text::wands::title} to "&3[&bWands&3]"
+	set {text::wands::helpemessage} to "%{text::wands::title}% &4Doe &c/wand help &4om de help pagina te krijgen."
+	set {text::wands::nep} to "%{text::wands::title}% &4Je hebt &convoldoende permissies &4om deze command uit te voeren."
+	set {text::wands::gbw} to "%{text::wands::title}% &4Deze wand bestaat niet, doe &c/wand get list &4om de wandlist te krijgen."
+
+on join:
+	if {spellpoints::wands::lightningspark::%player%} is not set:
+		set {spellpoints::wands::lightningspark::%player%} to 0
+
+command /wand [<text>] [<text>] [<text>] [<number>]:
+	trigger:
+		if player has permission "wand.get" OR "wand.*":
+
+			if arg 1 is "help":
+				send "&b============%{text::wands::title}%&b============"
+				send "&b/wand help &7&k::&f &3Krijg een help bericht in de chat."
+				send "&b/wand get list &7&k::&f &3Krijg een lijst met alle wands."
+				send "&b/wand get [wandnaam] &7&k::&f &3Krijg een wand."
+				send "&b/wand set [speler] [spell] [aantal spellpoints] &7&k::&f &3Zet de spellpoints van een speler naar het aantal opgegeven spellpoints."
+				send "&b/wand reset [speler] [all/spell] &7&k::&f &3Reset de spellpoints van de opgegeven speler."
+				send "&b============%{text::wands::title}%&b============"
+				stop
+
+			if arg 1 is "set":
+				if arg 2 is set:
+					if arg 3 is set:
+						if "%{spells::wands::list::*}%" contains arg 3:
+							if arg 4 is set:
+								send "%{text::wands::title}% &3Succesvol toegepast:"
+								send "&3Spellpoints van: &b%arg 2%"
+								send "&3Voor de spell: &b%arg 3%"
+								send "&3Gezet naar: &b%arg 4%"
+								stop
+							else:
+								send "%{text::wands::title}% &4Je moet nog een &caantal spellpoints &4invullen."
+								stop
+
+						else:
+							send "%{text::wands::title}% &4Dit is geen bestaande spell."
+							stop
+
+					else:
+						send "%{text::wands::title}% &4Je moet nog een &cspell &4opgeven."
+						stop
+
+				else:
+					send "%{text::wands::title}% &4Doe &c/wand set [speler] [spell] [aantal spellpoints]&4."
+					stop
+
+			if arg 1 is "reset":
+				if arg 2 is set:
+					if arg 3 is set:
+						if arg 3 is "all":
+							send "%{text::wands::title}% &3Alle spells zijn gereset van &b%arg 2%"
+							set {spellpoints::wands::lightningspark::%arg 2%} to 0
+							set {spellpoints::wands::lightning::%arg 2%} to 0
+							stop
+
+						if {spells::wands::list::*} contains arg 3:
+							send "%{text::wands::title}% &3Alle spells zijn gereset van &b%arg 2%"
+							set {spellpoints::wands::%arg 3%::%arg 2%} to 0
+							stop
+
+						else:
+							send "%{text::wands::title}% &4Dit is geen bestaande spell."
+							stop
+
+
+			if arg 1 is "get":
+
+				if arg 2 is "list":
+					send "%{text::wands::title}% &3Dit is de lijst met alle wands:"
+					send "%{text::wands::title}% &bLightning"
+					stop
+
+				if arg 2 is "Lightning":
+					send "%{text::wands::title}% &3Veel plezier met je &b&lLightning Wand&3."
+					give player a blaze rod named "&b&lLightning Wand" with lore "&5&kl"
+					stop
+
+				else:
+					send "%{text::wands::gbw}%"
+					stop
+			
+			else:
+				send "%{text::wands::helpemessage}%"
+				stop
+
+		else:
+			send "%{text::wands::nep}%"
+			stop
+
+
+on leftclick:
+	if player is in world "Kingdom":
+		if player is holding a blaze rod named "&b&lLightning Wand" with lore "&5&kl":
+			if {spells::wands::lightningwand::%player%} is 1:
+				if {spellpoints::wands::lightningspark::%player%} is not 10:
+					chance of 10%:
+						create an explosion of force 2 at the targeted block
+						create an explosion of force 1 at the player
+					chance of 5%:
+						spawn 1 zombie at location of player
+					chance of 25%:
+						add 1 to {spellpoints::wands::lightningspark::%player%}
+						send "&b[&3Spells&b] &3Je hebt &b&l1 spellpoint &3gekregen."
+
+					
+
+on leftclick:
+	if player is in world "Kingdom":
+		if player is holding a blaze rod named "&b&lLightning Wand" with lore "&5&kl":
+			if {spells::wands::lightningwand::%player%} is 1:
+				if {spellpoints::wands::lightningspark::%player%} is 10:
+					if {spells::wands::lightningspark::%player%} is 0:
+						show 50 "magical_crit" particles at location of targeted block for player offset by 0.5, 0.5, 0.5
+						damage targeted entity by 2 hearts
+						set {spells::wands::lightningspark::%player%} to 5
+						stop
+
+					else:
+						send "&b[&3Spells&b] &3Je hebt nog een cooldown van &b&l%{spells::wands::lightningspark::%player%}%"
+						stop
+
+
+			if {spells::wands::lightningwand::%player%} is 0:
+				if {spellpoints::wands::lightning::%player%} is 20:
+					if {spells::wands::lightning::%player%} is 0:
+						strike lightning at the targeted block
+						set {spells::wands::lightning::%player%} to 10
+						stop
+
+					else:
+						send "&b[&3Spells&b] &3Je hebt nog een cooldown van &b&l%{spells::wands::lightning::%player%}%"
+						stop
+
+on rightclick:
+	if player is in world "Kingdom":
+		if player is holding a blaze rod named "&b&lLightning Wand" with lore "&5&kl":
+			if {spells::wands::lightningwand::%player%} is not set:
+				set {spells::wands::lightningwand::%player%} to 1
+				send "&b[&3Spells&b] &b&lLightning Spark"
+				stop
+			
+			if {spells::wands::lightningwand::%player%} is 0:
+				set {spells::wands::lightningwand::%player%} to 1
+				send "&b[&3Spells&b] &b&lLightning Spark"
+				stop
+
+			if {spells::wands::lightningwand::%player%} is 1:
+				set {spells::wands::lightningwand::%player%} to 0
+				send "&b[&3Spells&b] &b&lLightning"
+				stop
+
+every 1 second:
+    loop all players in world "Kingdom":
+ 
+        if {spells::wands::lightningspark::%loop-player%} is not set:
+            set {spells::wands::lightningspark::%loop-player%} to 0
+ 
+        if {spells::wands::lightning::%loop-player%} is not set:
+            set {spells::wands::lightning::%loop-player%} to 0
+       
+        if {spells::wands::lightningspark::%loop-player%} is more than 0:
+            remove 1 from {spells::wands::lightningspark::%loop-player%}
+        if {spells::wands::lightning::%loop-player%} is more than 0:           
+ 
+            remove 1 from {spells::wands::lightning::%loop-player%}
+
+
+every 1 tick:
+	loop all players in world "Kingdom":
+		if loop-player is holding a blaze rod named "&b&lLightning Wand" with lore "&5&kl":
+			if {spells::wands::lightningwand::%loop-player%} is 1:
+				if {spellpoints::wands::lightningspark::%loop-player%} is 0:
+					show actionbar from "&c::::::::::::::::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 1:
+					show actionbar from "&a::&c::::::::::::::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 2:
+					show actionbar from "&a:::&c:::::::::::::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 3:
+					show actionbar from "&a::::::&c::::::::::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 4:
+					show actionbar from "&a::::::::&c::::::::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 5:
+					show actionbar from "&a::::::::::&c::::::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 6:
+					show actionbar from "&a::::::::::::&c::::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 7:
+					show actionbar from "&a::::::::::::::&c::::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 8:
+					show actionbar from "&a::::::::::::::::&c::::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 9:
+					show actionbar from "&a::::::::::::::::::&c::" to loop-player
+				if {spellpoints::wands::lightningspark::%loop-player%} is 10:
+					show actionbar from "&b&lLightning Spark" to loop-player
