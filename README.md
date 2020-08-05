@@ -5,6 +5,6 @@ https://docs.skunity.com/downloads
 
 For the function 'json' you need the following Skript (this isn't made by me so I won't claim that I made it) https://www.spigotmc.org/resources/json-sk.8851/
 
-Also is not everything finished, I abandoned some projects because I was working at it for to long.
+Also is not everything finished, I abandoned some projects because I was working at it for to long or was simply bored from it.
 
 Please read LICENSE.md
