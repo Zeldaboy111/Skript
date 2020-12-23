@@ -1,0 +1,87 @@
+options:
+	logo: &c&lPark&7
+
+
+function ride(p: Player, vehicle: entity):
+	set {_push} to true
+	while {ride.%{_p}%}:
+		push {_vehicle} forwards at speed getSpeedFromLocation({_p}, location of block 1 meters below {_vehicle})
+		tryDismount({_p}, {_vehicle})
+		wait 1 ticks
+
+function getSpeedFromLocation(p: Player, loc: Location) :: number:
+	set {_sign} to block at location of {_loc}
+	if block 1 meter north of {_loc} is sign:
+		set {_sign} to block 1 meter north of {_loc}
+	else if block 1 meter east of {_loc} is sign:
+		set {_sign} to block 1 meter east of {_loc}
+	else if block 1 meter south of {_loc} is sign:
+		set {_sign} to block 1 meter south of {_loc}
+	else if block 1 meter west of {_loc} is sign:
+		set {_sign} to block 1 meter west of {_loc}
+
+	if type of {_sign} is not sign:
+		return {ride.%{_p}%.speed}
+	set {_speed} to line 2 of {_sign}
+	if {_speed} parsed as a number is set:
+		set {ride.%{_p}%.speed} to line 2 of {_sign} parsed as a number
+	if {ride.%{_p}%.speed} > 1:
+		set {ride.%{_p}%.speed} to 1
+	return {ride.%{_p}%.speed}
+
+function tryDismount(p: Player, vehicle: entity):
+	if location of block at {_vehicle} is {ride1.start}:
+		if {ride.%{_p}%.hasLeftStation} is true:
+			delete {ride.%{_p}%}
+			make {_p} dismount vehicle
+			exitRide({_p}, {_vehicle})
+	else if {ride.%{_p}%.hasLeftStation} is false:
+		set {ride.%{_p}%.hasLeftStation} to true
+
+function exitRide(p: Player, vehicle: Entity):
+	set {_v} to velocity of {_vehicle}
+	set x of {_v} to 0
+	set y of {_v} to 0
+	set z of {_v} to 0
+	set velocity of {_vehicle} to {_v}
+
+function spawnVehicle(loc: Location):
+	spawn minecart at {_loc} with nbt "{CustomNameVisible:0b}"
+	set display name of last spawned minecart to "&aRide"
+	add "{CustomNameVisible:0b}" to nbt of last spawned minecart
+	set {ride1.start} to location of block at last spawned minecart
+
+command /park:
+	trigger:
+		if player is riding:
+			send "{@logo} You cannot do this is you are riding a vehicle/entity."
+			stop
+		spawnVehicle(location of player)
+
+command /forcereset:
+	trigger:
+		if {ride.%player%} is true:
+			set {ride.%player%} to false
+			kill vehicle of player
+			spawnVehicle({ride1.start})
+			send "{@logo} Reset the vehicle."
+		else:
+			send "{@logo} You are not riding a vehicle."
+
+on rightclick on minecart:
+	if display name of clicked entity is "&aRide":
+		set {ride.%player%} to true
+		set {ride.%player%.hasLeftStation} to false
+		set {ride.%player%.speed} to 0.1
+		ride(player, clicked entity)
+		wait 1 second
+		
+	else if display name of clicked entity is "&cRide":
+		send "{@logo} This ride is currently not available." to player
+		cancel event
+
+on quit:
+	delete {ride.%player%}
+on vehicle exit:
+	if {ride.%player%} is true:
+		cancel event
